@@ -11,6 +11,7 @@ int	main(int argc, char **argv)
 {
 	int num_thread = 5;
 	pthread_t threads[num_thread];
+	pthread_mutex_t	mutexes[num_thread]
 	int	i = 0;
     // if (argc != 5 && argc != 6)
 	// {
@@ -22,6 +23,7 @@ int	main(int argc, char **argv)
 	{
 		if (pthread_create(&threads[i], NULL, do_nothing, NULL) != 0)
 			return (1);
+		pthread_mutex_init(mutexes[i], NULL);
 		i++;
 	}
 	while (i-- > 0)
