@@ -1,9 +1,9 @@
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 INCLUDE = -Iinclude
 NAME = philo
-SRC = src/philo.c \
-	  src/utils.c
+SRC =	src/philo.c \
+	src/utils.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
@@ -12,7 +12,7 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -lpthread
 
 %.o: %.c
-	$(CC) $(CLAGS) $(INCLUDE) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
 clean:
 	rm -f $(OBJ)
