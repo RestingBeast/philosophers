@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void	*philo_routine(void* arg)
+void	*philo_routine(void *arg)
 {
 	return (NULL);
 }
@@ -20,7 +20,7 @@ void	*philo_routine(void* arg)
 void	init_routine(t_data *data, t_routine *routine, int i)
 {
 	data->fork1 = data->forks[i];
-	if (i  == data->num_philos - 1)
+	if (i == data->num_philos - 1)
 		data->fork2 = data->forks[0];
 	else
 		data->fork2 = data->forks[i + 1];
