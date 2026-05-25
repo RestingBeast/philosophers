@@ -53,19 +53,20 @@ int	init_data(int argc, char **argv, t_data *data)
 	while (++i < argc)
 	{
 		if (!is_integer(argv[i]))
-			return (0);
+			return (fatal_error("Expected integers as arguements"));
 	}
 	data->num_philos = simple_atoi(argv[1]);
 	data->routine = init_routine(argc, argv);
 	if (!data->routine)
-		return (0);
+		return (fatal_error("Malloc Failed"));
 	data->forks = init_forks(data->num_philos);
 	if (!data->forks)
-		return (free(data->routine), 0);
+		return (free(data->routine), fatal_error("Malloc Failed"));
     data->philosophers = init_philosophers(data);
     if (!data->philosophers)
-        return (free(data->routine), free(data->forks), 0);
-    return (1);
+        return (free(data->routine), free(data->forks),
+                    fatal_error("Malloc Failed"));
+    return (0);
 }
 
 void	clean_up(t_data *data)

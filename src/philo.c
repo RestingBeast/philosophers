@@ -19,8 +19,8 @@ int	main(int argc, char **argv)
 
 	if (argc != 5 && argc != 6)
 		return (fatal_error("Expected 4 or 5 arguments"));
-	if (init_data(argc, argv, &data) == 0)
-		return (fatal_error("Expected integers as arguements"));
+	if (init_data(argc, argv, &data) != 0)
+		return (EXIT_FAILURE);
 	clean_up(&data);
 	printf("Current time in ms: %ld\n", get_time_ms());
 /*
