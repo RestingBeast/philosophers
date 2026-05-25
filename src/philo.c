@@ -77,6 +77,7 @@ int	main(int argc, char **argv)
 	if (init_data(argc, argv, &data) == 0)
 		return (fatal_error("Expected integers as arguements"));
 	destroy_forks(&data);
+	printf("Current time in ms: %ld\n", get_time_ms());
 /*
 	i = 0;
 	while (i < num_thread)

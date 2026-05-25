@@ -12,12 +12,12 @@
 
 #include "philo.h"
 
-int	get_time_ms(void)
+long int	get_time_ms(void)
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return (time.tv_usec / 1000);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
 int	is_integer(char *str)

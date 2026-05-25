@@ -12,8 +12,9 @@
 
 #include "philo.h"
 
-void	*philo_routine(void *arg)
+void	*philo_routine(void *routine)
 {
+	printf("Philosopher #%d is sleeping.", routine-> i))
 	return (NULL);
 }
 

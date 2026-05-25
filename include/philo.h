@@ -40,7 +40,7 @@ struct s_routine
 	int	meals_to_eat;
 };
 
-int	get_time_ms(void);
+long int	get_time_ms(void);
 int	is_integer(char *str);
 int	simple_atoi(char *str);
 int	fatal_error(char *msg);
