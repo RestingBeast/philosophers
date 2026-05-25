@@ -3,7 +3,9 @@ CFLAGS = -Wall -Werror -Wextra -g
 INCLUDE = -Iinclude
 NAME = philo
 SRC =	src/philo.c \
-	src/utils.c
+		src/data.c \
+		src/routine.c \
+		src/utils.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
