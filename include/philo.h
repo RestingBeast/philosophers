@@ -18,20 +18,20 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct s_routine	t_routine;
+typedef struct s_rules		t_rules;
 typedef struct s_philo		t_philo;
 typedef struct s_data		t_data;
 
 struct s_data
 {
 	int				num_philos;
-	t_routine		*routine;
+	t_rules			*rules;
 	pthread_mutex_t *forks;
 	t_philo			**philosophers;
 	pthread_t		*threads;
 };
 
-struct s_routine
+struct s_rules
 {
 	int	time_to_die;
 	int	time_to_eat;
@@ -42,7 +42,7 @@ struct s_routine
 struct s_philo
 {
 	int				num_philo;
-	t_routine		*routine;
+	t_rules			*rules;
 	pthread_mutex_t	*forks;
 };
 
@@ -51,12 +51,12 @@ int	init_data(int argc, char **argv, t_data *data);
 void	clean_up(t_data *data);
 
 // routine.c
-t_routine	*init_routine(int argc, char **argv);
 
 // utils.c
 long int	get_time_ms(void);
 int			is_integer(char *str);
 int			simple_atoi(char *str);
 int			fatal_error(char *msg);
+t_rules		*init_rules(int argc, char **argv);
 
 #endif

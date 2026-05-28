@@ -20,7 +20,7 @@ static t_philo  **init_philosophers(t_data *data)
             return (free(res), NULL);
         }
         philo->num_philo = i;
-        philo->routine = data->routine;
+        philo->rules = data->rules;
         philo->forks = data->forks;
         res[i++] = philo;
     }
@@ -56,19 +56,19 @@ int	init_data(int argc, char **argv, t_data *data)
 			return (fatal_error("Expected integers as arguements"));
 	}
 	data->num_philos = simple_atoi(argv[1]);
-	data->routine = init_routine(argc, argv);
-	if (!data->routine)
+	data->rules = init_rules(argc, argv);
+	if (!data->rules)
 		return (fatal_error("Malloc Failed"));
 	data->threads = malloc(data->num_philos * sizeof(pthread_t));
 	if (!data->threads)
-		return (free(data->routine), fatal_error("Malloc Failed"));
+		return (free(data->rules), fatal_error("Malloc Failed"));
 	data->forks = init_forks(data->num_philos);
 	if (!data->forks)
-		return (free(data->routine), free(data->threads),
+		return (free(data->rules), free(data->threads),
 			fatal_error("Malloc Failed"));
 	data->philosophers = init_philosophers(data);
 	if (!data->philosophers)
-		return (free(data->routine), free(data->forks),
+		return (free(data->rules), free(data->forks),
 			free(data->threads), fatal_error("Malloc Failed"));
 	return (0);
 }
@@ -85,7 +85,7 @@ void	clean_up(t_data *data)
 		i++;
 	}
 	free(data->forks);
-	free(data->routine);
+	free(data->rules);
 	free(data->threads);
 	free(data->philosophers);
 }
