@@ -12,28 +12,31 @@
 
 #include "philo.h"
 
+void	*do_nothing(void *args)
+{
+	printf("%d\n", ((t_philo *) args)->num_philo);
+	return (NULL);
+}
+
 int	main(int argc, char **argv)
 {
-//	int		i;
+	int		i;
 	t_data	data;
 
 	if (argc != 5 && argc != 6)
 		return (fatal_error("Expected 4 or 5 arguments"));
 	if (init_data(argc, argv, &data) != 0)
 		return (EXIT_FAILURE);
-	clean_up(&data);
-	printf("Current time in ms: %ld\n", get_time_ms());
-/*
 	i = 0;
-	while (i < num_thread)
+	while (i < data.num_philos)
 	{
-		if (pthread_create(&threads[i], NULL, do_nothing, NULL) != 0)
+		if (pthread_create(&(data.threads[i]), NULL, do_nothing,
+			(void *) data.philosophers[i]) != 0)
 			return (1);
-		pthread_mutex_init(mutexes[i], NULL);
 		i++;
 	}
 	while (i-- > 0)
-		pthread_join(threads[i], NULL);
-*/
+		pthread_join(data.threads[i], NULL);
+	clean_up(&data);
 	return (0);
 }

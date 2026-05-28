@@ -28,6 +28,7 @@ struct s_data
 	t_routine		*routine;
 	pthread_mutex_t *forks;
 	t_philo			**philosophers;
+	pthread_t		*threads;
 };
 
 struct s_routine

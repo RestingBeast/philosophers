@@ -59,14 +59,18 @@ int	init_data(int argc, char **argv, t_data *data)
 	data->routine = init_routine(argc, argv);
 	if (!data->routine)
 		return (fatal_error("Malloc Failed"));
+	data->threads = malloc(data->num_philos * sizeof(pthread_t));
+	if (!data->threads)
+		return (free(data->routine), fatal_error("Malloc Failed"));
 	data->forks = init_forks(data->num_philos);
 	if (!data->forks)
-		return (free(data->routine), fatal_error("Malloc Failed"));
-    data->philosophers = init_philosophers(data);
-    if (!data->philosophers)
-        return (free(data->routine), free(data->forks),
-                    fatal_error("Malloc Failed"));
-    return (0);
+		return (free(data->routine), free(data->threads),
+			fatal_error("Malloc Failed"));
+	data->philosophers = init_philosophers(data);
+	if (!data->philosophers)
+		return (free(data->routine), free(data->forks),
+			free(data->threads), fatal_error("Malloc Failed"));
+	return (0);
 }
 
 void	clean_up(t_data *data)
@@ -75,12 +79,13 @@ void	clean_up(t_data *data)
 
 	i = 0;
 	while (i < data->num_philos)
-    {
+	{
 		pthread_mutex_destroy(&data->forks[i]);
-        free(data->philosophers[i]);
-        i++;
-    }
+		free(data->philosophers[i]);
+		i++;
+	}
 	free(data->forks);
 	free(data->routine);
-    free(data->philosophers);
+	free(data->threads);
+	free(data->philosophers);
 }
