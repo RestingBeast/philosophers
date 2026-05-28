@@ -44,16 +44,18 @@ struct s_philo
 	int				num_philo;
 	t_rules			*rules;
 	pthread_mutex_t	*forks;
+	int				*someone_died;
 };
 
 // data.c
-int	init_data(int argc, char **argv, t_data *data);
+int	init_data(int argc, char **argv, t_data *data, int *flag);
 void	clean_up(t_data *data);
 
 // routine.c
+void	*start_routine(void *args);
 
 // utils.c
-long int	get_time_ms(void);
+long long		get_time_ms(void);
 int			is_integer(char *str);
 int			simple_atoi(char *str);
 int			fatal_error(char *msg);

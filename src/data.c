@@ -1,6 +1,6 @@
 #include "philo.h"
 
-static t_philo  **init_philosophers(t_data *data)
+static t_philo  **init_philosophers(t_data *data, int *flag)
 {
     t_philo **res;
     t_philo *philo;
@@ -22,6 +22,7 @@ static t_philo  **init_philosophers(t_data *data)
         philo->num_philo = i;
         philo->rules = data->rules;
         philo->forks = data->forks;
+	philo->someone_died = flag;
         res[i++] = philo;
     }
     return (res);
@@ -45,7 +46,7 @@ static pthread_mutex_t	*init_forks(int num_philos)
 	return (res);
 }
 
-int	init_data(int argc, char **argv, t_data *data)
+int	init_data(int argc, char **argv, t_data *data, int *flag)
 {
 	int	i;
 
@@ -66,7 +67,7 @@ int	init_data(int argc, char **argv, t_data *data)
 	if (!data->forks)
 		return (free(data->rules), free(data->threads),
 			fatal_error("Malloc Failed"));
-	data->philosophers = init_philosophers(data);
+	data->philosophers = init_philosophers(data, flag);
 	if (!data->philosophers)
 		return (free(data->rules), free(data->forks),
 			free(data->threads), fatal_error("Malloc Failed"));
