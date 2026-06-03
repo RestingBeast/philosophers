@@ -14,7 +14,7 @@
 
 static int	check_for_death(t_philo *philo, long long time_to_die)
 {
-	usleep(10);
+	usleep(10 * 1000);
 	if (*(philo->someone_died))
 		return (1);
 	if (get_time_ms() > time_to_die)
@@ -48,7 +48,7 @@ static void	have_a_meal(t_philo *p)
 		grab_forks(&(p->forks[left]), &(p->forks[right]), p->num_philo);
 	else
 		grab_forks(&(p->forks[right]), &(p->forks[left]), p->num_philo);
-	usleep(p->rules->time_to_eat);
+	usleep(p->rules->time_to_eat * 1000);
 	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
 	pthread_mutex_unlock(&(p->forks[p->num_philo]));
 	pthread_mutex_unlock(&(p->forks[right]));
@@ -61,7 +61,7 @@ void	*start_routine(void *args)
 	int			meals_eaten;
 
 	philo = (t_philo *)args;
-	time_to_die = get_time_ms() + philo->rules->time_to_die;
+	time_to_die = get_time_ms() + (philo->rules->time_to_die * 1000);
 	meals_eaten = philo->rules->meals_to_eat;
 	while (1)
 	{
@@ -70,9 +70,9 @@ void	*start_routine(void *args)
 		if (check_for_death(philo, time_to_die))
 			break ;
 		have_a_meal(philo);
-		time_to_die = get_time_ms() + philo->rules->time_to_die;
+		time_to_die = get_time_ms() + (philo->rules->time_to_die * 1000);
 		meals_eaten--;
-		usleep(philo->rules->time_to_sleep);
+		usleep(philo->rules->time_to_sleep * 1000);
 		printf("%lld %d is sleeping\n", get_time_ms(), philo->num_philo + 1);
 	}
 	return (NULL);
