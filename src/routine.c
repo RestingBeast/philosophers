@@ -26,40 +26,54 @@ static int	check_for_death(t_philo *philo, long long time_to_die)
 	return (0);
 }
 
-static int	grab_forks(t_philo *p)
+// To-do: Handle error in mutex locking later
+static void	grab_forks(pthread_mutex_t *first, pthread_mutex_t *second, int num)
 {
-	int	right_fork;
+	pthread_mutex_lock(first);
+	printf("%lld %d has taken a fork\n", get_time_ms(), num + 1);
+	pthread_mutex_lock(second);
+	printf("%lld %d has taken a fork\n", get_time_ms(), num + 1);
+}
 
-	right_fork = p->num_philo + 1;
+static void	have_a_meal(t_philo *p)
+{
+	int	left;
+	int	right;
+
+	left = p->num_philo;
+	right = p->num_philo + 1;
 	if (p->num_philo == p->rules->num_philos - 1)
-		right_fork = 0
+		right = 0;
 	if (p->num_philo % 2 == 0)
-	{
-		pthread_mutex_lock(&(p->forks[p->num_philo]));
-		printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
-		pthread_mutex_lock(&(p->forks[right_fork]));
-		printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
-	}
+		grab_forks(&(p->forks[left]), &(p->forks[right]), p->num_philo);
 	else
-	{
-		pthread_mutex_lock(&(p->forks[right_fork]));
-		printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
-		pthread_mutex_lock(&(p->forks[p->num_philo]));
-		printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
-	}
+		grab_forks(&(p->forks[right]), &(p->forks[left]), p->num_philo);
+	usleep(p->rules->time_to_eat);
+	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
+	pthread_mutex_unlock(&(p->forks[p->num_philo]));
+	pthread_mutex_unlock(&(p->forks[right]));
 }
 
 void	*start_routine(void *args)
 {
 	long long	time_to_die;
 	t_philo		*philo;
+	int			meals_eaten;
 
 	philo = (t_philo *)args;
 	time_to_die = get_time_ms() + philo->rules->time_to_die;
+	meals_eaten = philo->rules->meals_to_eat;
 	while (1)
 	{
+		if (meals_eaten == 0)
+			break ;
 		if (check_for_death(philo, time_to_die))
-			break;
+			break ;
+		have_a_meal(philo);
+		time_to_die = get_time_ms() + philo->rules->time_to_die;
+		meals_eaten--;
+		usleep(philo->rules->time_to_sleep);
+		printf("%lld %d is sleeping\n", get_time_ms(), philo->num_philo + 1);
 	}
 	return (NULL);
 }
