@@ -57,6 +57,7 @@ t_rules	*init_rules(int argc, char **argv)
 	rules = malloc(sizeof(t_rules));
 	if (!rules)
 		return (NULL);
+	rules->num_philos = simple_atoi(argv[1]);
 	rules->time_to_die = simple_atoi(argv[2]);
 	rules->time_to_eat = simple_atoi(argv[3]);
 	rules->time_to_sleep = simple_atoi(argv[4]);	

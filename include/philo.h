@@ -24,7 +24,6 @@ typedef struct s_data		t_data;
 
 struct s_data
 {
-	int				num_philos;
 	t_rules			*rules;
 	pthread_mutex_t *forks;
 	t_philo			**philosophers;
@@ -33,6 +32,7 @@ struct s_data
 
 struct s_rules
 {
+	int	num_philos;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;

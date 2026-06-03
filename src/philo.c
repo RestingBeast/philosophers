@@ -24,7 +24,7 @@ int	main(int argc, char **argv)
 	if (init_data(argc, argv, &data, &someone_died) != 0)
 		return (EXIT_FAILURE);
 	i = 0;
-	while (i < data.num_philos)
+	while (i < data.rules->num_philos)
 	{
 		if (pthread_create(&(data.threads[i]), NULL, start_routine,
 			(void *) data.philosophers[i]) != 0)
