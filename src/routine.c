@@ -27,15 +27,21 @@ static int	check_for_death(t_philo *philo, long long time_to_die)
 }
 
 // To-do: Handle error in mutex locking later
-static void	grab_forks(pthread_mutex_t *first, pthread_mutex_t *second, int num)
+static int	grab_forks(pthread_mutex_t *first, pthread_mutex_t *second, int num)
 {
 	pthread_mutex_lock(first);
 	printf("%lld %d has taken a fork\n", get_time_ms(), num + 1);
 	pthread_mutex_lock(second);
 	printf("%lld %d has taken a fork\n", get_time_ms(), num + 1);
+	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
+	usleep(p->rules->time_to_eat * 1000);
+	pthread_mutex_unlock(first);
+	pthread_mutex_unlock(second);
+
+	return (0);
 }
 
-static void	have_a_meal(t_philo *p)
+static int	have_a_meal(t_philo *p)
 {
 	int	left;
 	int	right;
@@ -48,10 +54,7 @@ static void	have_a_meal(t_philo *p)
 		grab_forks(&(p->forks[left]), &(p->forks[right]), p->num_philo);
 	else
 		grab_forks(&(p->forks[right]), &(p->forks[left]), p->num_philo);
-	usleep(p->rules->time_to_eat * 1000);
-	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
-	pthread_mutex_unlock(&(p->forks[p->num_philo]));
-	pthread_mutex_unlock(&(p->forks[right]));
+	return (0);
 }
 
 void	*start_routine(void *args)
