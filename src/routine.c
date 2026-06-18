@@ -57,7 +57,7 @@ static int	have_a_meal(t_philo *p)
 	return (0);
 }
 
-void	*start_routine(void *args)
+void	*philo_routine(void *args)
 {
 	long long	time_to_die;
 	t_philo		*philo;

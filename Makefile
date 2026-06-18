@@ -5,6 +5,7 @@ NAME = philo
 SRC =	src/philo.c \
 		src/data.c \
 		src/routine.c \
+		src/observer.c \
 		src/utils.c
 OBJ = $(SRC:.c=.o)
 

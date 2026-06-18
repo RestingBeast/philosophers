@@ -26,11 +26,14 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (i < data.rules->num_philos)
 	{
-		if (pthread_create(&(data.threads[i]), NULL, start_routine,
+		if (pthread_create(&(data.threads[i]), NULL, philo_routine,
 			(void *) data.philosophers[i]) != 0)
 			return (1);
 		i++;
 	}
+	if (pthread_create(&(data.observer), NULL, observer_routine, NULL) != 0)
+		return (1);
+	pthread_join(data.observer, NULL);
 	while (i-- > 0)
 		pthread_join(data.threads[i], NULL);
 	clean_up(&data);

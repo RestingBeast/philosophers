@@ -28,6 +28,7 @@ struct s_data
 	pthread_mutex_t *forks;
 	t_philo			**philosophers;
 	pthread_t		*threads;
+	pthread_t		observer;
 };
 
 struct s_rules
@@ -52,7 +53,10 @@ int	init_data(int argc, char **argv, t_data *data, int *flag);
 void	clean_up(t_data *data);
 
 // routine.c
-void	*start_routine(void *args);
+void	*philo_routine(void *args);
+
+// observer.c
+void	*observer_routine(void *args);
 
 // utils.c
 long long		get_time_ms(void);
