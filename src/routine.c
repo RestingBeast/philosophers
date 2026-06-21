@@ -12,20 +12,6 @@
 
 #include "philo.h"
 
-static int	check_for_death(t_philo *philo, long long time_to_die)
-{
-	usleep(10 * 1000);
-	if (*(philo->someone_died))
-		return (1);
-	if (get_time_ms() > time_to_die)
-	{
-		*(philo->someone_died) = 1;
-		printf("%lld %d died\n", get_time_ms(), philo->num_philo + 1);
-		return (1);
-	}
-	return (0);
-}
-
 // To-do: Handle error in mutex locking later
 static int	grab_forks(pthread_mutex_t *first, pthread_mutex_t *second, t_philo *p)
 {
@@ -59,24 +45,24 @@ static int	have_a_meal(t_philo *p)
 
 void	*philo_routine(void *args)
 {
-	long long	time_to_die;
 	t_philo		*philo;
 	int			meals_eaten;
 
 	philo = (t_philo *)args;
-	time_to_die = get_time_ms() + (philo->rules->time_to_die * 1000);
 	meals_eaten = philo->rules->meals_to_eat;
 	while (1)
 	{
+		if (*(philo->start_f) == 0)
+		{
+			usleep(10000);
+			continue ;
+		}
 		if (meals_eaten == 0)
 			break ;
-		if (check_for_death(philo, time_to_die))
-			break ;
 		have_a_meal(philo);
-		time_to_die = get_time_ms() + (philo->rules->time_to_die * 1000);
 		meals_eaten--;
-		usleep(philo->rules->time_to_sleep * 1000);
 		printf("%lld %d is sleeping\n", get_time_ms(), philo->num_philo + 1);
+		usleep(philo->rules->time_to_sleep * 1000);
 	}
 	return (NULL);
 }

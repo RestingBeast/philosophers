@@ -1,6 +1,6 @@
 #include "philo.h"
 
-static t_philo  **init_philosophers(t_data *data, int *flag)
+static t_philo  **init_philos(t_data *data, volatile int *start_f, volatile int *death_f)
 {
     t_philo **res;
     t_philo *philo;
@@ -22,7 +22,8 @@ static t_philo  **init_philosophers(t_data *data, int *flag)
         philo->num_philo = i;
         philo->rules = data->rules;
         philo->forks = data->forks;
-	philo->someone_died = flag;
+		philo->start_f = start_f;
+		philo->death_f = death_f;
         res[i++] = philo;
     }
     return (res);
@@ -46,7 +47,7 @@ static pthread_mutex_t	*init_forks(int num_philos)
 	return (res);
 }
 
-int	init_data(int argc, char **argv, t_data *data, int *flag)
+int	init_data(int argc, char **argv, t_data *data)
 {
 	int	i;
 
@@ -56,6 +57,8 @@ int	init_data(int argc, char **argv, t_data *data, int *flag)
 		if (!is_integer(argv[i]))
 			return (fatal_error("Expected integers as arguements"));
 	}
+	data->start_f = 0;
+	data->death_f = 0;
 	data->rules = init_rules(argc, argv);
 	if (!data->rules)
 		return (fatal_error("Malloc Failed"));
@@ -66,8 +69,8 @@ int	init_data(int argc, char **argv, t_data *data, int *flag)
 	if (!data->forks)
 		return (free(data->rules), free(data->threads),
 			fatal_error("Malloc Failed"));
-	data->philosophers = init_philosophers(data, flag);
-	if (!data->philosophers)
+	data->philos = init_philos(data, &(data->start_f), &(data->death_f));
+	if (!data->philos)
 		return (free(data->rules), free(data->forks),
 			free(data->threads), fatal_error("Malloc Failed"));
 	return (0);
@@ -81,11 +84,11 @@ void	clean_up(t_data *data)
 	while (i < data->rules->num_philos)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
-		free(data->philosophers[i]);
+		free(data->philos[i]);
 		i++;
 	}
 	free(data->forks);
 	free(data->rules);
 	free(data->threads);
-	free(data->philosophers);
+	free(data->philos);
 }
