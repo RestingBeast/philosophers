@@ -1,6 +1,7 @@
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -g
 INCLUDE = -Iinclude
+HEADER = include/philo.h
 NAME = philo
 SRC =	src/philo.c \
 		src/data.c \
@@ -14,7 +15,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -lpthread
 
-%.o: %.c
+%.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
 clean:

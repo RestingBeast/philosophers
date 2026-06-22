@@ -43,6 +43,21 @@ static int	have_a_meal(t_philo *p)
 	return (0);
 }
 
+static void	wait_for_flag(pthread_mutex_t *lock, int *flag)
+{
+	while (1)
+	{
+		pthread_mutex_lock(lock);
+		if (*flag == 1)
+		{
+			pthread_mutex_unlock(lock);
+			break ;
+		}
+		pthread_mutex_unlock(lock);
+		usleep(10000);
+	}
+}
+
 void	*philo_routine(void *args)
 {
 	t_philo		*philo;
@@ -50,13 +65,9 @@ void	*philo_routine(void *args)
 
 	philo = (t_philo *)args;
 	meals_eaten = philo->rules->meals_to_eat;
+	wait_for_flag(philo->write_lock, philo->start_f);
 	while (1)
 	{
-		if (*(philo->start_f) == 0)
-		{
-			usleep(10000);
-			continue ;
-		}
 		if (meals_eaten == 0)
 		{
 			philo->done_f = 1;

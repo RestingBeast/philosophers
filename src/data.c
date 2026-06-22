@@ -1,6 +1,6 @@
 #include "philo.h"
 
-static t_philo  **init_philos(t_data *data, volatile int *start_f, volatile int *death_f)
+static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
 {
     t_philo **res;
     t_philo *philo;
@@ -25,6 +25,7 @@ static t_philo  **init_philos(t_data *data, volatile int *start_f, volatile int 
 		philo->start_f = start_f;
 		philo->death_f = death_f;
 		philo->done_f = 0;
+		philo->write_lock = &data->write_lock;
         res[i++] = philo;
     }
     return (res);
@@ -60,9 +61,14 @@ int	init_data(int argc, char **argv, t_data *data)
 	}
 	data->start_f = 0;
 	data->death_f = 0;
+	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
+		return (fatal_error("Mutex Initialization Failed"));
+	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
+		return (fatal_error("Mutex Initialization Failed"));
 	data->rules = init_rules(argc, argv);
 	if (!data->rules)
 		return (fatal_error("Malloc Failed"));
+	// Add check for if philosopher is > 1
 	data->threads = malloc(data->rules->num_philos * sizeof(pthread_t));
 	if (!data->threads)
 		return (free(data->rules), fatal_error("Malloc Failed"));
@@ -81,6 +87,8 @@ void	clean_up(t_data *data)
 {
 	int	i;
 
+	pthread_mutex_destroy(&data->write_lock);
+	pthread_mutex_destroy(&data->death_lock);
 	i = 0;
 	while (i < data->rules->num_philos)
 	{

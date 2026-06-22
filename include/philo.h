@@ -29,8 +29,10 @@ struct s_data
 	t_philo						**philos;
 	pthread_t					*threads;
 	pthread_t					observer;
-	volatile int				start_f;
-	volatile int				death_f;
+	int				start_f;
+	int				death_f;
+	pthread_mutex_t				death_lock;
+	pthread_mutex_t				write_lock;
 };
 
 struct s_rules
@@ -44,12 +46,13 @@ struct s_rules
 
 struct s_philo
 {
-	int							num_philo;
-	t_rules						*rules;
-	pthread_mutex_t				*forks;
-	volatile int				*start_f;
-	volatile int				*death_f;
-	volatile int				done_f;
+	int				num_philo;
+	t_rules			*rules;
+	pthread_mutex_t	*forks;
+	int				*start_f;
+	int				*death_f;
+	int				done_f;
+	pthread_mutex_t *write_lock;
 };
 
 // data.c
