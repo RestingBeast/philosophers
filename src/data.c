@@ -24,6 +24,7 @@ static t_philo  **init_philos(t_data *data, volatile int *start_f, volatile int 
         philo->forks = data->forks;
 		philo->start_f = start_f;
 		philo->death_f = death_f;
+		philo->done_f = 0;
         res[i++] = philo;
     }
     return (res);

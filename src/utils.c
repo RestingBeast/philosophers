@@ -64,6 +64,6 @@ t_rules	*init_rules(int argc, char **argv)
 	if (argc == 6)
 		rules->meals_to_eat = simple_atoi(argv[5]);
 	else
-		rules->meals_to_eat = 0;
+		rules->meals_to_eat = -1;
 	return (rules);
 }

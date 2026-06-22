@@ -49,6 +49,7 @@ struct s_philo
 	pthread_mutex_t				*forks;
 	volatile int				*start_f;
 	volatile int				*death_f;
+	volatile int				done_f;
 };
 
 // data.c

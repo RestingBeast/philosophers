@@ -58,9 +58,13 @@ void	*philo_routine(void *args)
 			continue ;
 		}
 		if (meals_eaten == 0)
-			break ;
+		{
+			philo->done_f = 1;
+			break;
+		}
 		have_a_meal(philo);
-		meals_eaten--;
+		if (meals_eaten > 0)
+			meals_eaten--;
 		printf("%lld %d is sleeping\n", get_time_ms(), philo->num_philo + 1);
 		usleep(philo->rules->time_to_sleep * 1000);
 	}
