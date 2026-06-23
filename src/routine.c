@@ -70,7 +70,9 @@ void	*philo_routine(void *args)
 	{
 		if (meals_eaten == 0)
 		{
+			pthread_mutex_lock(philo->write_lock);
 			philo->done_f = 1;
+			pthread_mutex_unlock(philo->write_lock);
 			break;
 		}
 		have_a_meal(philo);
