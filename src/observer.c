@@ -6,11 +6,9 @@ void    *observer_routine(void *args)
 	int		done_threads;
 	int		i;
 
-	data = (t_data *) args;
-	printf("Observer started!\n"); // To be deleted
-	pthread_mutex_lock(&data->write_lock);
-	data->start_f = 1;
-	pthread_mutex_unlock(&data->write_lock);
+    data = (t_data *) args;
+    printf("Observer started!\n"); // To be deleted
+	toggle_flag(&data->write_lock, &data->start_f);
 	while (1)
 	{
 		done_threads = 0;

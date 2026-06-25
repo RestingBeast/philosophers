@@ -50,20 +50,19 @@ int	fatal_error(char *msg)
 	return (EXIT_FAILURE);
 }
 
-t_rules	*init_rules(int argc, char **argv)
+void	toggle_flag(pthread_mutex_t *lock, int *flag)
 {
-	t_rules	*rules;
+	pthread_mutex_lock(lock);
+	*flag = !(*flag);
+	pthread_mutex_unlock(lock);
+}
 
-	rules = malloc(sizeof(t_rules));
-	if (!rules)
-		return (NULL);
-	rules->num_philos = simple_atoi(argv[1]);
-	rules->time_to_die = simple_atoi(argv[2]);
-	rules->time_to_eat = simple_atoi(argv[3]);
-	rules->time_to_sleep = simple_atoi(argv[4]);	
-	if (argc == 6)
-		rules->meals_to_eat = simple_atoi(argv[5]);
-	else
-		rules->meals_to_eat = -1;
-	return (rules);
+int	get_flag(pthread_mutex_t *lock, int *flag)
+{
+	int	res;
+
+	pthread_mutex_lock(lock);
+	res = *flag;
+	pthread_mutex_unlock(lock);
+	return (res);
 }

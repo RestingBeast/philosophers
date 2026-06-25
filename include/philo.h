@@ -70,6 +70,10 @@ long long		get_time_ms(void);
 int			is_integer(char *str);
 int			simple_atoi(char *str);
 int			fatal_error(char *msg);
+void		toggle_flag(pthread_mutex_t *lock, int *flag);
+int			get_flag(pthread_mutex_t *lock, int *flag);
+
+// rules.c
 t_rules		*init_rules(int argc, char **argv);
 
 #endif
