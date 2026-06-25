@@ -12,22 +12,45 @@
 
 #include "philo.h"
 
-// To-do: Handle error in mutex locking later
-static int	grab_forks(pthread_mutex_t *first, pthread_mutex_t *second, t_philo *p)
+static int	check_death(pthread_mutex_t *lock, int *flag, int *stop)
+{
+	int	death;
+
+	death = get_flag(lock, flag);
+	if (death)
+	{
+		*stop = 1;
+		return (1);
+	}
+	return (0);
+}
+
+static int	start_eating(pthread_mutex_t *first, pthread_mutex_t *second,
+							t_philo *p, int *stop)
 {
 	pthread_mutex_lock(first);
 	printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
+	if (check_death(p->death_lock, p->death_f, stop))
+	{
+		pthread_mutex_unlock(first);
+		return (0);
+	}
 	pthread_mutex_lock(second);
 	printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
+	if (check_death(p->death_lock, p->death_f, stop))
+	{
+		pthread_mutex_unlock(first);
+		pthread_mutex_unlock(second);
+		return (0);
+	}
 	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
 	usleep(p->rules->time_to_eat * 1000);
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
-
-	return (0);
+	return (1);
 }
 
-static int	have_a_meal(t_philo *p)
+static int	have_a_meal(t_philo *p, int *stop)
 {
 	int	left;
 	int	right;
@@ -36,11 +59,13 @@ static int	have_a_meal(t_philo *p)
 	right = p->num_philo + 1;
 	if (p->num_philo == p->rules->num_philos - 1)
 		right = 0;
+	if (check_death(p->death_lock, p->death_f, stop))
+			return (0);
 	if (p->num_philo % 2 == 0)
-		grab_forks(&(p->forks[left]), &(p->forks[right]), p);
+		return (start_eating(&(p->forks[left]), &(p->forks[right]), p, stop));
 	else
-		grab_forks(&(p->forks[right]), &(p->forks[left]), p);
-	return (0);
+		return (start_eating(&(p->forks[right]), &(p->forks[left]), p, stop));
+	return (1);
 }
 
 static void	sync_philos(pthread_mutex_t *lock, int *flag)
@@ -55,26 +80,31 @@ static void	sync_philos(pthread_mutex_t *lock, int *flag)
 
 void	*philo_routine(void *args)
 {
-	t_philo		*philo;
-	int			meals_eaten;
+	t_philo		*p;
+	int			meals_left;
+	int			stop;
 
-	philo = (t_philo *)args;
-	meals_eaten = philo->rules->meals_to_eat;
-	sync_philos(philo->write_lock, philo->start_f);
-	while (1)
+	p = (t_philo *)args;
+	meals_left = p->rules->meals_to_eat;
+	stop = 0;
+	sync_philos(p->write_lock, p->start_f);
+	while (!stop)
 	{
-		if (meals_eaten == 0)
+		if (meals_left == 0)
 		{
-			pthread_mutex_lock(philo->write_lock);
-			philo->done_f = 1;
-			pthread_mutex_unlock(philo->write_lock);
+			toggle_flag(p->write_lock, &p->done_f);
 			break;
 		}
-		have_a_meal(philo);
-		if (meals_eaten > 0)
-			meals_eaten--;
-		printf("%lld %d is sleeping\n", get_time_ms(), philo->num_philo + 1);
-		usleep(philo->rules->time_to_sleep * 1000);
+		if (check_death(p->death_lock, p->death_f, &stop))
+			continue ;
+		if (!have_a_meal(p, &stop))
+			continue ;
+		if (meals_left > 0)
+			meals_left--;
+		if (check_death(p->death_lock, p->death_f, &stop))
+			continue ;
+		printf("%lld %d is sleeping\n", get_time_ms(), p->num_philo + 1);
+		usleep(p->rules->time_to_sleep * 1000);
 	}
 	return (NULL);
 }

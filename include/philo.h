@@ -53,6 +53,7 @@ struct s_philo
 	int				*death_f;
 	int				done_f;
 	pthread_mutex_t *write_lock;
+	pthread_mutex_t *death_lock;
 };
 
 // data.c

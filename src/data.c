@@ -26,6 +26,7 @@ static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
 		philo->death_f = death_f;
 		philo->done_f = 0;
 		philo->write_lock = &data->write_lock;
+		philo->death_lock = &data->death_lock;
         res[i++] = philo;
     }
     return (res);

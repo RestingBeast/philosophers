@@ -5,25 +5,31 @@ void    *observer_routine(void *args)
     t_data  *data;
 	int		done_threads;
 	int		i;
+	int		done;
+	int		stop;
 
+	stop = 0;
     data = (t_data *) args;
     printf("Observer started!\n"); // To be deleted
 	toggle_flag(&data->write_lock, &data->start_f);
-	while (1)
+	while (!stop)
 	{
+		usleep(500 * 1000);
 		done_threads = 0;
 		i = 0;
 		while (i < data->rules->num_philos)
 		{
-			pthread_mutex_lock(&data->write_lock);
-			done_threads += data->philos[i]->done_f;
-			pthread_mutex_unlock(&data->write_lock);
-			// death checking should be here!
-			// if (data->philos[i]->done_f == 1)
-			// {
-			// 	i++;
-			// 	continue ;
-			// }
+			done = get_flag(&data->write_lock, &data->philos[i]->done_f);
+			done_threads += done;
+			if (!done)
+			{
+				if (i == 2)
+				{
+					toggle_flag(&data->death_lock, &data->death_f);
+					printf("%lld %d died\n", get_time_ms(), i + 1);
+					stop = 1;
+				}
+			}
 			i++;
 		}
 		if (done_threads == data->rules->num_philos)
