@@ -28,6 +28,7 @@ static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
 		philo->write_lock = &data->write_lock;
 		philo->death_lock = &data->death_lock;
 		philo->print_lock = &data->print_lock;
+		philo->meal_lock = &data->meal_lock;
 		res[i++] = philo;
 	}
 	return (res);
@@ -68,6 +69,8 @@ int	init_data(int argc, char **argv, t_data *data)
 	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
 		return (fatal_error("Mutex Initialization Failed"));
 	if (pthread_mutex_init(&(data->print_lock), NULL) != 0)
+		return (fatal_error("Mutex Initialization Failed"));
+	if (pthread_mutex_init(&(data->meal_lock), NULL) != 0)
 		return (fatal_error("Mutex Initialization Failed"));
 	data->rules = init_rules(argc, argv);
 	if (!data->rules)
