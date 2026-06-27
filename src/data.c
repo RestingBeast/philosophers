@@ -2,34 +2,35 @@
 
 static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
 {
-    t_philo **res;
-    t_philo *philo;
-    int     i;
+	t_philo	**res;
+	t_philo	*philo;
+	int	i;
 
-    res = malloc(data->rules->num_philos * sizeof(t_philo *));
-    if (!res)
-        return (NULL);
-    i = 0;
-    while (i < data->rules->num_philos)
-    {
-        philo = malloc(sizeof(t_philo));
-        if (!philo)
-        {
-            while (i-- > 0)
-                free(res[i]);
-            return (free(res), NULL);
-        }
-        philo->num_philo = i;
-        philo->rules = data->rules;
-        philo->forks = data->forks;
+	res = malloc(data->rules->num_philos * sizeof(t_philo *));
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < data->rules->num_philos)
+	{
+		philo = malloc(sizeof(t_philo));
+		if (!philo)
+		{
+			while (i-- > 0)
+				free(res[i]);
+			return (free(res), NULL);
+		}
+		philo->num_philo = i;
+		philo->rules = data->rules;
+		philo->forks = data->forks;
 		philo->start_f = start_f;
 		philo->death_f = death_f;
 		philo->done_f = 0;
 		philo->write_lock = &data->write_lock;
 		philo->death_lock = &data->death_lock;
-        res[i++] = philo;
-    }
-    return (res);
+		philo->print_lock = &data->print_lock;
+		res[i++] = philo;
+	}
+	return (res);
 }
 
 static pthread_mutex_t	*init_forks(int num_philos)
@@ -62,9 +63,11 @@ int	init_data(int argc, char **argv, t_data *data)
 	}
 	data->start_f = 0;
 	data->death_f = 0;
+	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
+		return (fatal_error("Mutex Initialization Failed"));
 	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
 		return (fatal_error("Mutex Initialization Failed"));
-	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
+	if (pthread_mutex_init(&(data->print_lock), NULL) != 0)
 		return (fatal_error("Mutex Initialization Failed"));
 	data->rules = init_rules(argc, argv);
 	if (!data->rules)

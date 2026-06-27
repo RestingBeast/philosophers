@@ -49,20 +49,3 @@ int	fatal_error(char *msg)
 	printf("%s\n", msg);
 	return (EXIT_FAILURE);
 }
-
-void	toggle_flag(pthread_mutex_t *lock, int *flag)
-{
-	pthread_mutex_lock(lock);
-	*flag = !(*flag);
-	pthread_mutex_unlock(lock);
-}
-
-int	get_flag(pthread_mutex_t *lock, int *flag)
-{
-	int	res;
-
-	pthread_mutex_lock(lock);
-	res = *flag;
-	pthread_mutex_unlock(lock);
-	return (res);
-}

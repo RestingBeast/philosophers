@@ -29,21 +29,21 @@ static int	start_eating(pthread_mutex_t *first, pthread_mutex_t *second,
 							t_philo *p, int *stop)
 {
 	pthread_mutex_lock(first);
-	printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
+	print_status(p, "has taken a fork");
 	if (check_death(p->death_lock, p->death_f, stop))
 	{
 		pthread_mutex_unlock(first);
 		return (0);
 	}
 	pthread_mutex_lock(second);
-	printf("%lld %d has taken a fork\n", get_time_ms(), p->num_philo + 1);
+	print_status(p, "has taken a fork");
 	if (check_death(p->death_lock, p->death_f, stop))
 	{
 		pthread_mutex_unlock(first);
 		pthread_mutex_unlock(second);
 		return (0);
 	}
-	printf("%lld %d is eating\n", get_time_ms(), p->num_philo + 1);
+	print_status(p, "is eating");
 	usleep(p->rules->time_to_eat * 1000);
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
@@ -103,7 +103,7 @@ void	*philo_routine(void *args)
 			meals_left--;
 		if (check_death(p->death_lock, p->death_f, &stop))
 			continue ;
-		printf("%lld %d is sleeping\n", get_time_ms(), p->num_philo + 1);
+		print_status(p, "is sleeping");
 		usleep(p->rules->time_to_sleep * 1000);
 	}
 	return (NULL);

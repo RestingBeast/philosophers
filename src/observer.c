@@ -2,15 +2,15 @@
 
 void    *observer_routine(void *args)
 {
-    t_data  *data;
+	t_data	*data;
 	int		done_threads;
 	int		i;
 	int		done;
 	int		stop;
 
 	stop = 0;
-    data = (t_data *) args;
-    printf("Observer started!\n"); // To be deleted
+	data = (t_data *) args;
+	printf("Observer started!\n"); // To be deleted
 	toggle_flag(&data->write_lock, &data->start_f);
 	while (!stop)
 	{
@@ -26,7 +26,9 @@ void    *observer_routine(void *args)
 				if (i == 2)
 				{
 					toggle_flag(&data->death_lock, &data->death_f);
+					pthread_mutex_lock(&data->print_lock);
 					printf("%lld %d died\n", get_time_ms(), i + 1);
+					pthread_mutex_unlock(&data->print_lock);
 					stop = 1;
 				}
 			}
@@ -37,5 +39,5 @@ void    *observer_routine(void *args)
 		usleep(500000); // Change later
 	}
 	printf("Simulation finished!\n"); // To be deleted
-    return (NULL);
+	return (NULL);
 }

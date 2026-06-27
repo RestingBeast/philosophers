@@ -33,6 +33,7 @@ struct s_data
 	int				death_f;
 	pthread_mutex_t				death_lock;
 	pthread_mutex_t				write_lock;
+	pthread_mutex_t				print_lock;
 };
 
 struct s_rules
@@ -54,6 +55,7 @@ struct s_philo
 	int				done_f;
 	pthread_mutex_t *write_lock;
 	pthread_mutex_t *death_lock;
+	pthread_mutex_t	*print_lock;
 };
 
 // data.c
@@ -63,6 +65,11 @@ void	clean_up(t_data *data);
 // routine.c
 void	*philo_routine(void *args);
 
+// routine_utils.c
+void		toggle_flag(pthread_mutex_t *lock, int *flag);
+int			get_flag(pthread_mutex_t *lock, int *flag);
+void		print_status(t_philo *p, const char *msg);
+
 // observer.c
 void	*observer_routine(void *args);
 
@@ -71,8 +78,6 @@ long long		get_time_ms(void);
 int			is_integer(char *str);
 int			simple_atoi(char *str);
 int			fatal_error(char *msg);
-void		toggle_flag(pthread_mutex_t *lock, int *flag);
-int			get_flag(pthread_mutex_t *lock, int *flag);
 
 // rules.c
 t_rules		*init_rules(int argc, char **argv);

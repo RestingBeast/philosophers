@@ -6,6 +6,7 @@ NAME = philo
 SRC =	src/philo.c \
 		src/data.c \
 		src/routine.c \
+		src/routine_utils.c \
 		src/rules.c \
 		src/observer.c \
 		src/utils.c
