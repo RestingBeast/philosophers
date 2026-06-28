@@ -75,7 +75,8 @@ int	init_data(int argc, char **argv, t_data *data)
 	data->rules = init_rules(argc, argv);
 	if (!data->rules)
 		return (fatal_error("Malloc Failed"));
-	// Add check for if philosopher is > 1
+	if (data->rules->num_philos < 2)
+		return (free(data->rules), fatal_error("Not enough fork!"));
 	data->threads = malloc(data->rules->num_philos * sizeof(pthread_t));
 	if (!data->threads)
 		return (free(data->rules), fatal_error("Malloc Failed"));

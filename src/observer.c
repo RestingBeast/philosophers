@@ -23,11 +23,10 @@ void    *observer_routine(void *args)
 
 	stop = 0;
 	data = (t_data *) args;
-	printf("Observer started!\n"); // To be deleted
 	toggle_flag(&data->write_lock, &data->start_f);
+	usleep(10000);
 	while (!stop)
 	{
-		usleep(500 * 1000);
 		done_threads = 0;
 		i = 0;
 		while (i < data->rules->num_philos)
@@ -36,7 +35,7 @@ void    *observer_routine(void *args)
 			done_threads += done;
 			if (!done)
 			{
-				if (is_dead(data->philos[i]) && !get_flag(&data->death_lock, &data->death_f))
+				if (!get_flag(&data->death_lock, &data->death_f) && is_dead(data->philos[i]))
 				{
 					toggle_flag(&data->death_lock, &data->death_f);
 					pthread_mutex_lock(&data->print_lock);
@@ -51,6 +50,5 @@ void    *observer_routine(void *args)
 			break;
 		usleep(10*1000); // Change later
 	}
-	printf("Simulation finished!\n"); // To be deleted
 	return (NULL);
 }

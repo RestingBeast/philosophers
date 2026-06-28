@@ -99,6 +99,7 @@ void	*philo_routine(void *args)
 	meals_left = p->rules->meals_to_eat;
 	stop = 0;
 	sync_philos(p->write_lock, p->start_f);
+	p->last_meal = get_time_ms();
 	while (!stop)
 	{
 		if (meals_left == 0)
