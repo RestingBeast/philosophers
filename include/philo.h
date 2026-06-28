@@ -48,12 +48,13 @@ struct s_rules
 
 struct s_philo
 {
-	int				num_philo;
 	t_rules			*rules;
-	pthread_mutex_t	*forks;
+	long long	last_meal;
+	int				num_philo;
 	int				*start_f;
 	int				*death_f;
 	int				done_f;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*death_lock;
 	pthread_mutex_t	*print_lock;
@@ -71,6 +72,7 @@ void	*philo_routine(void *args);
 void		toggle_flag(pthread_mutex_t *lock, int *flag);
 int			get_flag(pthread_mutex_t *lock, int *flag);
 void		print_status(t_philo *p, const char *msg);
+void		update_last_meal(pthread_mutex_t *lock, long long *time);
 
 // observer.c
 void	*observer_routine(void *args);

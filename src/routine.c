@@ -47,6 +47,17 @@ static int	start_eating(pthread_mutex_t *first, pthread_mutex_t *second,
 	usleep(p->rules->time_to_eat * 1000);
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
+	pthread_mutex_lock(p->meal_lock);
+	if (check_death(p->death_lock, p->death_f, stop))
+	{
+		pthread_mutex_unlock(p->meal_lock);
+		return (0);
+	}
+	else
+	{
+		p->last_meal = get_time_ms();
+		pthread_mutex_unlock(p->meal_lock);
+	}
 	return (1);
 }
 

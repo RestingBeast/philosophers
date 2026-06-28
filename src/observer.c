@@ -1,5 +1,18 @@
 #include "philo.h"
 
+static int	is_dead(t_philo *p)
+{
+	int	res;
+	pthread_mutex_lock(p->meal_lock);
+	if (get_time_ms() < p->last_meal + p->rules->time_to_die)
+		res = 0;
+	else
+		res = 1;
+	pthread_mutex_unlock(p->meal_lock);
+	return (res);
+}
+
+
 void    *observer_routine(void *args)
 {
 	t_data	*data;
@@ -23,7 +36,7 @@ void    *observer_routine(void *args)
 			done_threads += done;
 			if (!done)
 			{
-				if (i == 2)
+				if (is_dead(data->philos[i]) && !get_flag(&data->death_lock, &data->death_f))
 				{
 					toggle_flag(&data->death_lock, &data->death_f);
 					pthread_mutex_lock(&data->print_lock);
