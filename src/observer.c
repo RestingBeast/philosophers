@@ -49,7 +49,7 @@ void    *observer_routine(void *args)
 		}
 		if (done_threads == data->rules->num_philos)
 			break;
-		usleep(500000); // Change later
+		usleep(10*1000); // Change later
 	}
 	printf("Simulation finished!\n"); // To be deleted
 	return (NULL);
