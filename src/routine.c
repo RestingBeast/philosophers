@@ -47,17 +47,9 @@ static int	start_eating(pthread_mutex_t *first, pthread_mutex_t *second,
 	usleep(p->rules->time_to_eat * 1000);
 	pthread_mutex_unlock(first);
 	pthread_mutex_unlock(second);
-	pthread_mutex_lock(p->meal_lock);
 	if (check_death(p->death_lock, p->death_f, stop))
-	{
-		pthread_mutex_unlock(p->meal_lock);
 		return (0);
-	}
-	else
-	{
-		p->last_meal = get_time_ms();
-		pthread_mutex_unlock(p->meal_lock);
-	}
+	update_last_meal(p->meal_lock, &p->last_meal);
 	return (1);
 }
 
@@ -85,7 +77,7 @@ static void	sync_philos(pthread_mutex_t *lock, int *flag)
 	{
 		if (get_flag(lock, flag) == 1)
 			break ;
-		usleep(10000);
+		usleep(10 * 1000);
 	}
 }
 
@@ -99,7 +91,7 @@ void	*philo_routine(void *args)
 	meals_left = p->rules->meals_to_eat;
 	stop = 0;
 	sync_philos(p->write_lock, p->start_f);
-	p->last_meal = get_time_ms();
+	update_last_meal(p->meal_lock, &p->last_meal);
 	while (!stop)
 	{
 		if (meals_left == 0)

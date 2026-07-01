@@ -24,7 +24,6 @@ void    *observer_routine(void *args)
 	stop = 0;
 	data = (t_data *) args;
 	toggle_flag(&data->write_lock, &data->start_f);
-	usleep(10000);
 	while (!stop)
 	{
 		done_threads = 0;
@@ -33,7 +32,7 @@ void    *observer_routine(void *args)
 		{
 			done = get_flag(&data->write_lock, &data->philos[i]->done_f);
 			done_threads += done;
-			if (!done)
+			if (!done && get_last_meal(&data->meal_lock, &data->philos[i]->last_meal) != 0)
 			{
 				if (!get_flag(&data->death_lock, &data->death_f) && is_dead(data->philos[i]))
 				{
@@ -48,7 +47,7 @@ void    *observer_routine(void *args)
 		}
 		if (done_threads == data->rules->num_philos)
 			break;
-		usleep(10*1000); // Change later
+		usleep(10*1000);
 	}
 	return (NULL);
 }

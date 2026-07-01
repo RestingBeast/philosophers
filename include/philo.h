@@ -73,6 +73,7 @@ void		toggle_flag(pthread_mutex_t *lock, int *flag);
 int			get_flag(pthread_mutex_t *lock, int *flag);
 void		print_status(t_philo *p, const char *msg);
 void		update_last_meal(pthread_mutex_t *lock, long long *time);
+long long	get_last_meal(pthread_mutex_t *lock, long long *time);
 
 // observer.c
 void	*observer_routine(void *args);
