@@ -37,20 +37,19 @@ void	print_status(t_philo *p, const char *msg)
 	pthread_mutex_unlock(p->print_lock);
 }
 
-// Just a work around for now, i am so lazy
-long long	get_last_meal(pthread_mutex_t *lock, long long *time)
-{
-	long long	res;
-
-	pthread_mutex_lock(lock);
-	res = *time;
-	pthread_mutex_unlock(lock);
-	return (res);
-}
-
 void	update_last_meal(pthread_mutex_t *lock, long long *time)
 {
 	pthread_mutex_lock(lock);
 	*time = get_time_ms();
 	pthread_mutex_unlock(lock);
+}
+
+int	check_death(pthread_mutex_t *lock, int *flag, int *stop)
+{
+	if (get_flag(lock, flag))
+	{
+		*stop = 1;
+		return (1);
+	}
+	return (0);
 }

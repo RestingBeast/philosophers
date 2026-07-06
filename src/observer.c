@@ -12,6 +12,22 @@ static int	is_dead(t_philo *p)
 	return (res);
 }
 
+/*
+void	*observer_routine(void *args)
+{
+	int	stop;
+	return (NULL);
+}
+*/
+static long long	get_last_meal(pthread_mutex_t *lock, long long *time)
+{
+	long long	res;
+
+	pthread_mutex_lock(lock);
+	res = *time;
+	pthread_mutex_unlock(lock);
+	return (res);
+}
 
 void    *observer_routine(void *args)
 {
@@ -51,3 +67,4 @@ void    *observer_routine(void *args)
 	}
 	return (NULL);
 }
+

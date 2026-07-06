@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kkhant-z <kkhant-z@student.42singapor      +#+  +:+       +#+        */
+/*   By: kkhant-z <kkhant-z@student.42singapore.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 19:47:52 by kkhant-z          #+#    #+#             */
-/*   Updated: 2026/05/23 19:47:53 by kkhant-z         ###   ########.fr       */
+/*   Updated: 2026/07/06 17:40:53 by kkhant-z         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ struct s_philo
 	t_rules			*rules;
 	long long	last_meal;
 	int				num_philo;
+	int				meals_left;
 	int				*start_f;
 	int				*death_f;
 	int				done_f;
@@ -62,29 +63,29 @@ struct s_philo
 };
 
 // data.c
-int	init_data(int argc, char **argv, t_data *data);
-void	clean_up(t_data *data);
+int				init_data(int argc, char **argv, t_data *data);
+void			clean_up(t_data *data);
 
 // routine.c
-void	*philo_routine(void *args);
+void			*philo_routine(void *args);
 
 // routine_utils.c
-void		toggle_flag(pthread_mutex_t *lock, int *flag);
-int			get_flag(pthread_mutex_t *lock, int *flag);
-void		print_status(t_philo *p, const char *msg);
-void		update_last_meal(pthread_mutex_t *lock, long long *time);
-long long	get_last_meal(pthread_mutex_t *lock, long long *time);
+void			toggle_flag(pthread_mutex_t *lock, int *flag);
+int				get_flag(pthread_mutex_t *lock, int *flag);
+void			print_status(t_philo *p, const char *msg);
+void			update_last_meal(pthread_mutex_t *lock, long long *time);
+int				check_death(pthread_mutex_t *lock, int *flag, int *stop);
 
 // observer.c
-void	*observer_routine(void *args);
+void			*observer_routine(void *args);
 
 // utils.c
 long long		get_time_ms(void);
-int			is_integer(char *str);
-int			simple_atoi(char *str);
-int			fatal_error(char *msg);
+int				is_integer(char *str);
+int				simple_atoi(char *str);
+int				fatal_error(char *msg);
 
 // rules.c
-t_rules		*init_rules(int argc, char **argv);
+t_rules			*init_rules(int argc, char **argv);
 
 #endif

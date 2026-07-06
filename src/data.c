@@ -20,6 +20,7 @@ static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
 			return (free(res), NULL);
 		}
 		philo->num_philo = i;
+		philo->meals_left = data->rules->meals_to_eat;
 		philo->rules = data->rules;
 		philo->forks = data->forks;
 		philo->start_f = start_f;
