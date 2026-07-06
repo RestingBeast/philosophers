@@ -1,70 +1,36 @@
 #include "philo.h"
 
-static int	is_dead(t_philo *p)
+static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 {
-	int	res;
-	pthread_mutex_lock(p->meal_lock);
-	if (get_time_ms() < p->last_meal + p->rules->time_to_die)
-		res = 0;
-	else
-		res = 1;
-	pthread_mutex_unlock(p->meal_lock);
-	return (res);
+	int	i;
+	int	done;
+
+	i = -1;
+	while (++i < num_philos)
+	{
+		if (p[i]->last_meal = 0)
+			break ;
+		done = get_flag(p[i]->write_lock, p[i]->done_f);
+		obs->done_threads += done;
+		if (done)
+			continue ;
+	}
 }
 
-/*
 void	*observer_routine(void *args)
 {
-	int	stop;
-	return (NULL);
-}
-*/
-static long long	get_last_meal(pthread_mutex_t *lock, long long *time)
-{
-	long long	res;
+	t_data		*data;
+	t_observer	obs;
 
-	pthread_mutex_lock(lock);
-	res = *time;
-	pthread_mutex_unlock(lock);
-	return (res);
-}
-
-void    *observer_routine(void *args)
-{
-	t_data	*data;
-	int		done_threads;
-	int		i;
-	int		done;
-	int		stop;
-
-	stop = 0;
 	data = (t_data *) args;
+	init_observer(&obs);
 	toggle_flag(&data->write_lock, &data->start_f);
-	while (!stop)
+	while (!obs->stop)
 	{
-		done_threads = 0;
-		i = 0;
-		while (i < data->rules->num_philos)
-		{
-			done = get_flag(&data->write_lock, &data->philos[i]->done_f);
-			done_threads += done;
-			if (!done && get_last_meal(&data->meal_lock, &data->philos[i]->last_meal) != 0)
-			{
-				if (!get_flag(&data->death_lock, &data->death_f) && is_dead(data->philos[i]))
-				{
-					toggle_flag(&data->death_lock, &data->death_f);
-					pthread_mutex_lock(&data->print_lock);
-					printf("%lld %d died\n", get_time_ms(), i + 1);
-					pthread_mutex_unlock(&data->print_lock);
-					stop = 1;
-				}
-			}
-			i++;
-		}
-		if (done_threads == data->rules->num_philos)
+		// call check_philosophers
+		if (obs->done_threads == data->rules->num_philos)
 			break;
-		usleep(10*1000);
+		usleep(10 * 1000);
 	}
 	return (NULL);
 }
-

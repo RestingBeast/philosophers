@@ -66,6 +66,7 @@ int	init_data(int argc, char **argv, t_data *data)
 	}
 	data->start_f = 0;
 	data->death_f = 0;
+	data->done_threads = 0;
 	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
 		return (fatal_error("Mutex Initialization Failed"));
 	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)

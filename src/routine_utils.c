@@ -43,13 +43,3 @@ void	update_last_meal(pthread_mutex_t *lock, long long *time)
 	*time = get_time_ms();
 	pthread_mutex_unlock(lock);
 }
-
-int	check_death(pthread_mutex_t *lock, int *flag, int *stop)
-{
-	if (get_flag(lock, flag))
-	{
-		*stop = 1;
-		return (1);
-	}
-	return (0);
-}

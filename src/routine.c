@@ -12,33 +12,32 @@
 
 #include "philo.h"
 
-static int	start_eating(pthread_mutex_t *first, pthread_mutex_t *second,
-							t_philo *p, int *stop)
+static int	start_eating(pthread_mutex_t *f, pthread_mutex_t *s, t_philo *p)
 {
-	pthread_mutex_lock(first);
+	pthread_mutex_lock(f);
 	print_status(p, "has taken a fork");
-	if (check_death(p->death_lock, p->death_f, stop))
+	if (get_flag(p->death_lock, p->death_f))
 	{
-		pthread_mutex_unlock(first);
+		pthread_mutex_unlock(f);
 		return (0);
 	}
-	pthread_mutex_lock(second);
+	pthread_mutex_lock(s);
 	print_status(p, "has taken a fork");
-	if (check_death(p->death_lock, p->death_f, stop))
+	if (get_flag(p->death_lock, p->death_f))
 	{
-		pthread_mutex_unlock(first);
-		pthread_mutex_unlock(second);
+		pthread_mutex_unlock(f);
+		pthread_mutex_unlock(s);
 		return (0);
 	}
 	update_last_meal(p->meal_lock, &p->last_meal);
 	print_status(p, "is eating");
 	usleep(p->rules->time_to_eat * 1000);
-	pthread_mutex_unlock(first);
-	pthread_mutex_unlock(second);
+	pthread_mutex_unlock(f);
+	pthread_mutex_unlock(s);
 	return (1);
 }
 
-static int	have_a_meal(t_philo *p, int *stop)
+static int	have_a_meal(t_philo *p)
 {
 	int	left;
 	int	right;
@@ -47,13 +46,12 @@ static int	have_a_meal(t_philo *p, int *stop)
 	right = p->num_philo + 1;
 	if (p->num_philo == p->rules->num_philos - 1)
 		right = 0;
-	if (check_death(p->death_lock, p->death_f, stop))
+	if (get_flag(p->death_lock, p->death_f))
 		return (0);
 	if (p->num_philo % 2 == 0)
-		return (start_eating(&(p->forks[left]), &(p->forks[right]), p, stop));
+		return (start_eating(&(p->forks[left]), &(p->forks[right]), p));
 	else
-		return (start_eating(&(p->forks[right]), &(p->forks[left]), p, stop));
-	return (1);
+		return (start_eating(&(p->forks[right]), &(p->forks[left]), p));
 }
 
 static void	sync_philos(pthread_mutex_t *lock, int *flag)
@@ -79,25 +77,23 @@ static int	is_done(t_philo *p)
 void	*philo_routine(void *args)
 {
 	t_philo		*p;
-	int			stop;
 
 	p = (t_philo *)args;
-	stop = 0;
 	sync_philos(p->write_lock, p->start_f);
 	update_last_meal(p->meal_lock, &p->last_meal);
-	while (!stop)
+	while (1)
 	{
 		if (is_done(p))
 			break ;
-		if (check_death(p->death_lock, p->death_f, &stop))
-			continue ;
+		if (get_flag(p->death_lock, p->death_f))
+			break ;
 		print_status(p, "is thinking");
-		if (!have_a_meal(p, &stop))
-			continue ;
+		if (!have_a_meal(p))
+			break ;
 		if (p->meals_left > 0)
 			p->meals_left--;
-		if (check_death(p->death_lock, p->death_f, &stop))
-			continue ;
+		if (get_flag(p->death_lock, p->death_f))
+			break ;
 		print_status(p, "is sleeping");
 		usleep(p->rules->time_to_sleep * 1000);
 	}

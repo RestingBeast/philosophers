@@ -20,6 +20,7 @@
 
 typedef struct s_rules		t_rules;
 typedef struct s_philo		t_philo;
+typedef struct s_observer	t_observer;
 typedef struct s_data		t_data;
 
 struct s_data
@@ -31,6 +32,7 @@ struct s_data
 	pthread_t					observer;
 	int				start_f;
 	int				death_f;
+	int				done_threads;
 	pthread_mutex_t				write_lock;
 	pthread_mutex_t				death_lock;
 	pthread_mutex_t				print_lock;
@@ -60,6 +62,12 @@ struct s_philo
 	pthread_mutex_t	*death_lock;
 	pthread_mutex_t	*print_lock;
 	pthread_mutex_t	*meal_lock;
+};
+
+struct s_observer
+{
+	int	stop;
+	int	done_threads;
 };
 
 // data.c
