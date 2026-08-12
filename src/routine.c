@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kkhant-z <kkhant-z@student.42singapor      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/23 20:00:58 by kkhant-z          #+#    #+#             */
-/*   Updated: 2026/05/23 20:00:59 by kkhant-z         ###   ########.fr       */
+/*   Updated: 2026/08/12 16:03:41 by kkhant-z         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	start_eating(pthread_mutex_t *f, pthread_mutex_t *s, t_philo *p)
 		pthread_mutex_unlock(s);
 		return (0);
 	}
-	update_last_meal(p->meal_lock, &p->last_meal);
+	update_death_timer(p);
 	print_status(p, "is eating");
 	usleep(p->rules->time_to_eat * 1000);
 	pthread_mutex_unlock(f);
@@ -80,7 +80,7 @@ void	*philo_routine(void *args)
 
 	p = (t_philo *)args;
 	sync_philos(p->write_lock, p->start_f);
-	update_last_meal(p->meal_lock, &p->last_meal);
+	update_death_timer(p);
 	while (1)
 	{
 		if (is_done(p))

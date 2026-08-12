@@ -37,9 +37,9 @@ void	print_status(t_philo *p, const char *msg)
 	pthread_mutex_unlock(p->print_lock);
 }
 
-void	update_last_meal(pthread_mutex_t *lock, long long *time)
+void	update_death_timer(t_philo *p)
 {
-	pthread_mutex_lock(lock);
-	*time = get_time_ms();
-	pthread_mutex_unlock(lock);
+	pthread_mutex_lock(p->meal_lock);
+	p->death_timer = get_time_ms() + p->rules->time_to_die;
+	pthread_mutex_unlock(p->meal_lock);
 }

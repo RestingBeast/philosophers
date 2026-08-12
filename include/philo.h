@@ -51,7 +51,7 @@ struct s_rules
 struct s_philo
 {
 	t_rules			*rules;
-	long long	last_meal;
+	long long	death_timer;
 	int				num_philo;
 	int				meals_left;
 	int				*start_f;
@@ -81,7 +81,7 @@ void			*philo_routine(void *args);
 void			toggle_flag(pthread_mutex_t *lock, int *flag);
 int				get_flag(pthread_mutex_t *lock, int *flag);
 void			print_status(t_philo *p, const char *msg);
-void			update_last_meal(pthread_mutex_t *lock, long long *time);
+void			update_death_timer(t_philo *p);
 int				check_death(pthread_mutex_t *lock, int *flag, int *stop);
 
 // observer.c
