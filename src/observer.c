@@ -28,6 +28,16 @@ static long long	get_death_timer(pthread_mutex_t *lock, long long *time)
 	return (res);
 }
 
+static	void	report_death(t_philo *p)
+{
+	pthread_mutex_lock(p->death_lock);
+	pthread_mutex_lock(p->print_lock);
+	*(p->death_f) = 1;
+	printf("%lld %d died\n", get_time_ms(), p->num_philo + 1);
+	pthread_mutex_unlock(p->print_lock);
+	pthread_mutex_unlock(p->death_lock);
+}
+
 static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 {
 	int	i;
@@ -38,15 +48,14 @@ static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 	while (++i < num_philos)
 	{
 		if (get_death_timer(p[i]->meal_lock, &p[i]->death_timer) == 0)
-			break ;
+			continue ;
 		done = get_flag(p[i]->write_lock, &p[i]->done_f);
 		obs->done_threads += done;
 		if (done)
 			continue ;
 		if (get_time_ms() >= get_death_timer(p[i]->meal_lock, &p[i]->death_timer))
 		{
-			print_status(p[i], "died");
-			toggle_flag(p[i]->death_lock, p[i]->death_f);
+			report_death(p[i]);
 			obs->stop = 1;
 			return ;
 		}

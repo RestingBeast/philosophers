@@ -82,7 +82,6 @@ void			toggle_flag(pthread_mutex_t *lock, int *flag);
 int				get_flag(pthread_mutex_t *lock, int *flag);
 void			print_status(t_philo *p, const char *msg);
 void			update_death_timer(t_philo *p);
-int				check_death(pthread_mutex_t *lock, int *flag, int *stop);
 
 // observer.c
 void			*observer_routine(void *args);

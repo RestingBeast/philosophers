@@ -100,6 +100,8 @@ void	clean_up(t_data *data)
 
 	pthread_mutex_destroy(&data->write_lock);
 	pthread_mutex_destroy(&data->death_lock);
+	pthread_mutex_destroy(&data->print_lock);
+	pthread_mutex_destroy(&data->meal_lock);
 	i = 0;
 	while (i < data->rules->num_philos)
 	{
