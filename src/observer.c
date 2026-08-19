@@ -30,10 +30,13 @@ static long long	get_death_timer(pthread_mutex_t *lock, long long *time)
 
 static	void	report_death(t_philo *p)
 {
+	long long	timestamp;
+
 	pthread_mutex_lock(p->death_lock);
 	pthread_mutex_lock(p->print_lock);
 	*(p->death_f) = 1;
-	printf("%lld %d died\n", get_time_ms(), p->num_philo + 1);
+	timestamp = get_time_ms() - p->rules->start_time;
+	printf("%lld %d died\n", timestamp, p->num_philo + 1);
 	pthread_mutex_unlock(p->print_lock);
 	pthread_mutex_unlock(p->death_lock);
 }
@@ -70,6 +73,7 @@ void	*observer_routine(void *args)
 	data = (t_data *) args;
 	init_observer(&obs);
 	toggle_flag(&data->write_lock, &data->start_f);
+	data->rules->start_time = get_time_ms() + 10;
 	while (!obs.stop)
 	{
 		check_philosophers(data->philos, data->rules->num_philos, &obs);

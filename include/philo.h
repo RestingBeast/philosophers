@@ -25,33 +25,34 @@ typedef struct s_data		t_data;
 
 struct s_data
 {
-	t_rules						*rules;
-	pthread_mutex_t 			*forks;
-	t_philo						**philos;
-	pthread_t					*threads;
-	pthread_t					observer;
+	t_rules			*rules;
+	pthread_mutex_t	*forks;
+	t_philo			**philos;
+	pthread_t		*threads;
+	pthread_t		observer;
 	int				start_f;
 	int				death_f;
 	int				done_threads;
-	pthread_mutex_t				write_lock;
-	pthread_mutex_t				death_lock;
-	pthread_mutex_t				print_lock;
-	pthread_mutex_t				meal_lock;
+	pthread_mutex_t	write_lock;
+	pthread_mutex_t	death_lock;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	meal_lock;
 };
 
 struct s_rules
 {
-	int	num_philos;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	meals_to_eat;
+	int			num_philos;
+	int			time_to_die;
+	int			time_to_eat;
+	int			time_to_sleep;
+	int			meals_to_eat;
+	long long	start_time;
 };
 
 struct s_philo
 {
 	t_rules			*rules;
-	long long	death_timer;
+	long long		death_timer;
 	int				num_philo;
 	int				meals_left;
 	int				*start_f;

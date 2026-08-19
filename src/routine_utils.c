@@ -31,9 +31,14 @@ int	get_flag(pthread_mutex_t *lock, int *flag)
 
 void	print_status(t_philo *p, const char *msg)
 {
+	long long	timestamp;
+
 	pthread_mutex_lock(p->print_lock);
 	if (get_flag(p->death_lock, p->death_f) == 0)
-		printf("%lld %d %s\n", get_time_ms(), p->num_philo + 1, msg);
+	{
+		timestamp = get_time_ms() - p->rules->start_time;
+		printf("%lld %d %s\n", timestamp, p->num_philo + 1, msg);
+	}
 	pthread_mutex_unlock(p->print_lock);
 }
 
