@@ -54,11 +54,11 @@ static int	have_a_meal(t_philo *p)
 		return (start_eating(&(p->forks[right]), &(p->forks[left]), p));
 }
 
-static void	sync_philos(pthread_mutex_t *lock, int *flag)
+static void	sync_philos(t_philo *p)
 {
 	while (1)
 	{
-		if (get_flag(lock, flag) == 1)
+		if (get_flag(p->write_lock, p->start_f) == 1)
 			break ;
 		usleep(10 * 1000);
 	}
@@ -79,7 +79,9 @@ void	*philo_routine(void *args)
 	t_philo		*p;
 
 	p = (t_philo *)args;
-	sync_philos(p->write_lock, p->start_f);
+	sync_philos(p);
+	if (p->num_philo % 2 == 1)
+			usleep(p->rules->time_to_eat * 1000);
 	update_death_timer(p);
 	while (1)
 	{
