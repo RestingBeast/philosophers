@@ -19,7 +19,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 5 && argc != 6)
 		return (fatal_error("Expected 4 or 5 arguments"));
-	if (init_data(argc, argv, &data) != 0)
+	if (create_data(argc, argv, &data) != 0)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (i < data.rules->num_philos)

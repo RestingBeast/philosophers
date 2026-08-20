@@ -1,42 +1,22 @@
 #include "philo.h"
 
-static t_philo  **init_philos(t_data *data, int *start_f, int *death_f)
+static void	init_data(t_data *data)
 {
-	t_philo	**res;
-	t_philo	*philo;
-	int	i;
-
-	res = malloc(data->rules->num_philos * sizeof(t_philo *));
-	if (!res)
-		return (NULL);
-	i = 0;
-	while (i < data->rules->num_philos)
-	{
-		philo = malloc(sizeof(t_philo));
-		if (!philo)
-		{
-			while (i-- > 0)
-				free(res[i]);
-			return (free(res), NULL);
-		}
-		philo->num_philo = i;
-		philo->meals_left = data->rules->meals_to_eat;
-		philo->rules = data->rules;
-		philo->forks = data->forks;
-		philo->start_f = start_f;
-		philo->death_f = death_f;
-		philo->done_f = 0;
-		philo->death_timer = 0;
-		philo->write_lock = &data->write_lock;
-		philo->death_lock = &data->death_lock;
-		philo->print_lock = &data->print_lock;
-		philo->meal_lock = &data->meal_lock;
-		res[i++] = philo;
-	}
-	return (res);
+	data->rules = NULL;
+	data->forks = NULL;
+	data->philos = NULL;
+	data->threads = NULL;
+	data->observer = NULL;
+	data->start_f = 0;
+	data->death_f = 0;
+	data->done_threads = 0;
+	data->write_lock = NULL;
+	data->death_lock = NULL;
+	data->print_lock = NULL;
+	data->meal_lock = NULL;
 }
 
-static pthread_mutex_t	*init_forks(int num_philos)
+static pthread_mutex_t	*create_forks(int num_philos)
 {
 	pthread_mutex_t	*res;
 	int			i;
@@ -54,7 +34,20 @@ static pthread_mutex_t	*init_forks(int num_philos)
 	return (res);
 }
 
-int	init_data(int argc, char **argv, t_data *data)
+static int	create_mutexes(t_data *data)
+{
+	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&(data->print_lock), NULL) != 0)
+		return (0);
+	if (pthread_mutex_init(&(data->meal_lock), NULL) != 0)
+		return (0);
+	return (1);
+}
+
+int	create_data(int argc, char **argv, t_data *data)
 {
 	int	i;
 
@@ -64,53 +57,22 @@ int	init_data(int argc, char **argv, t_data *data)
 		if (!is_integer(argv[i]))
 			return (fatal_error("Expected integers as arguements"));
 	}
-	data->start_f = 0;
-	data->death_f = 0;
-	data->done_threads = 0;
-	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
+	init_data(data);
+	if (!create_mutexes(data))
 		return (fatal_error("Mutex Initialization Failed"));
-	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
-		return (fatal_error("Mutex Initialization Failed"));
-	if (pthread_mutex_init(&(data->print_lock), NULL) != 0)
-		return (fatal_error("Mutex Initialization Failed"));
-	if (pthread_mutex_init(&(data->meal_lock), NULL) != 0)
-		return (fatal_error("Mutex Initialization Failed"));
-	data->rules = init_rules(argc, argv);
+	data->rules = create_rules(argc, argv);
 	if (!data->rules)
 		return (fatal_error("Malloc Failed"));
 	if (data->rules->num_philos < 2)
-		return (free(data->rules), fatal_error("Not enough fork!"));
+		return (clean_up(data), fatal_error("Not enough fork!"));
 	data->threads = malloc(data->rules->num_philos * sizeof(pthread_t));
 	if (!data->threads)
-		return (free(data->rules), fatal_error("Malloc Failed"));
-	data->forks = init_forks(data->rules->num_philos);
+		return (clean_up(data), fatal_error("Malloc Failed"));
+	data->forks = create_forks(data->rules->num_philos);
 	if (!data->forks)
-		return (free(data->rules), free(data->threads),
-			fatal_error("Malloc Failed"));
-	data->philos = init_philos(data, &(data->start_f), &(data->death_f));
+		return (clean_up(data), fatal_error("Malloc Failed"));
+	data->philos = create_philos(data, &(data->start_f), &(data->death_f));
 	if (!data->philos)
-		return (free(data->rules), free(data->forks),
-			free(data->threads), fatal_error("Malloc Failed"));
+		return (clean_up(data), fatal_error("Malloc Failed"));
 	return (0);
-}
-
-void	clean_up(t_data *data)
-{
-	int	i;
-
-	pthread_mutex_destroy(&data->write_lock);
-	pthread_mutex_destroy(&data->death_lock);
-	pthread_mutex_destroy(&data->print_lock);
-	pthread_mutex_destroy(&data->meal_lock);
-	i = 0;
-	while (i < data->rules->num_philos)
-	{
-		pthread_mutex_destroy(&data->forks[i]);
-		free(data->philos[i]);
-		i++;
-	}
-	free(data->forks);
-	free(data->rules);
-	free(data->threads);
-	free(data->philos);
 }

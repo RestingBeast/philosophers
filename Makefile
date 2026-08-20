@@ -5,6 +5,7 @@ HEADER = include/philo.h
 NAME = philo
 SRC =	src/philo.c \
 		src/data.c \
+		src/data_utils.c \
 		src/routine.c \
 		src/routine_utils.c \
 		src/rules.c \

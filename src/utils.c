@@ -47,5 +47,5 @@ int	simple_atoi(char *str)
 int	fatal_error(char *msg)
 {
 	printf("%s\n", msg);
-	return (EXIT_FAILURE);
+	return (1);
 }

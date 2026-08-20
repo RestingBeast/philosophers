@@ -72,7 +72,8 @@ struct s_observer
 };
 
 // data.c
-int				init_data(int argc, char **argv, t_data *data);
+int				create_data(int argc, char **argv, t_data *data);
+t_philo  		**create_philos(t_data *data, int *start_f, int *death_f);
 void			clean_up(t_data *data);
 
 // routine.c
@@ -94,6 +95,6 @@ int				simple_atoi(char *str);
 int				fatal_error(char *msg);
 
 // rules.c
-t_rules			*init_rules(int argc, char **argv);
+t_rules			*create_rules(int argc, char **argv);
 
 #endif

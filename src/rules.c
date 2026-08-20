@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-t_rules	*init_rules(int argc, char **argv)
+t_rules	*create_rules(int argc, char **argv)
 {
 	t_rules	*rules;
 
