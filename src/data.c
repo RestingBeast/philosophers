@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   data.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkhant-z <kkhant-z@student.42singapore.    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/20 18:33:36 by kkhant-z          #+#    #+#             */
+/*   Updated: 2026/08/20 21:38:15 by kkhant-z         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-static void	init_data(t_data *data)
+static int	init_data(t_data *data)
 {
 	data->rules = NULL;
 	data->forks = NULL;
@@ -9,12 +21,15 @@ static void	init_data(t_data *data)
 	data->start_f = 0;
 	data->death_f = 0;
 	data->done_threads = 0;
+	if (!create_mutexes(data))
+		return (0);
+	return (1);
 }
 
 static pthread_mutex_t	*create_forks(int num_philos)
 {
 	pthread_mutex_t	*res;
-	int			i;
+	int				i;
 
 	res = malloc(num_philos * sizeof(pthread_mutex_t));
 	if (!res)
@@ -64,8 +79,7 @@ int	create_data(int argc, char **argv, t_data *data)
 		if (!is_integer(argv[i]))
 			return (fatal_error("Expected integers as arguements"));
 	}
-	init_data(data);
-	if (!create_mutexes(data))
+	if (!init_data(data))
 		return (fatal_error("Mutex Initialization Failed"));
 	data->rules = create_rules(argc, argv);
 	if (!data->rules)

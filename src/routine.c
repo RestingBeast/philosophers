@@ -81,7 +81,7 @@ void	*philo_routine(void *args)
 	p = (t_philo *)args;
 	sync_philos(p);
 	if (p->num_philo % 2 == 1)
-			usleep(p->rules->time_to_eat * 1000);
+		usleep(p->rules->time_to_eat * 1000);
 	update_death_timer(p);
 	while (1)
 	{

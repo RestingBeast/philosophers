@@ -56,7 +56,8 @@ static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 		obs->done_threads += done;
 		if (done)
 			continue ;
-		if (get_time_ms() >= get_death_timer(p[i]->meal_lock, &p[i]->death_timer))
+		if (get_time_ms() >= get_death_timer(p[i]->meal_lock,
+				&p[i]->death_timer))
 		{
 			report_death(p[i]);
 			obs->stop = 1;

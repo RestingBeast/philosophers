@@ -25,11 +25,12 @@ int	main(int argc, char **argv)
 	while (i < data.rules->num_philos)
 	{
 		if (pthread_create(&(data.threads[i]), NULL, philo_routine,
-			(void *) data.philos[i]) != 0)
+				(void *) data.philos[i]) != 0)
 			return (1);
 		i++;
 	}
-	if (pthread_create(&(data.observer), NULL, observer_routine, (void *) &data) != 0)
+	if (pthread_create(&(data.observer), NULL,
+			observer_routine, (void *) &data) != 0)
 		return (1);
 	pthread_join(data.observer, NULL);
 	while (i-- > 0)
