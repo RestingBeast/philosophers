@@ -46,26 +46,26 @@ t_philo  **create_philos(t_data *data, int *start_f, int *death_f)
 	return (res);
 }
 
-static void	destroy_fork(int num_philos)
+static void	destroy_fork(int num_philos, pthread_mutex_t *forks)
 {
 	int	i;
 
 	i = 0;
 	while (i < num_philos)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&(forks[i]));
 		i++;
 	}
 }
 
-static void	free_philo(int num_philos)
+static void	free_philo(int num_philos, t_philo **philos)
 {
 	int	i;
 
 	i = 0;
 	while (i < num_philos)
 	{
-		free(data->philos[i]);
+		free(philos[i]);
 		i++;
 	}
 }
@@ -75,20 +75,16 @@ void	clean_up(t_data *data)
 	int	num_philo;
 
 	num_philo = 0;
-	if (data->write_lock)
-		pthread_mutex_destroy(&data->write_lock);
-	if (data->death_lock)
-		pthread_mutex_destroy(&data->death_lock);
-	if (data->print_lock)
-		pthread_mutex_destroy(&data->print_lock);
-	if (data->meal_lock)
-		pthread_mutex_destroy(&data->meal_lock);
+	pthread_mutex_destroy(&data->write_lock);
+	pthread_mutex_destroy(&data->death_lock);
+	pthread_mutex_destroy(&data->print_lock);
+	pthread_mutex_destroy(&data->meal_lock);
 	if (data->rules)
 		num_philo = data->rules->num_philos;
 	free(data->rules);
-	destroy_fork(num_philo);
+	destroy_fork(num_philo, data->forks);
 	free(data->forks);
 	free(data->threads);
-	free_philo(num_philo);
+	free_philo(num_philo, data->philos);
 	free(data->philos);
 }

@@ -6,14 +6,9 @@ static void	init_data(t_data *data)
 	data->forks = NULL;
 	data->philos = NULL;
 	data->threads = NULL;
-	data->observer = NULL;
 	data->start_f = 0;
 	data->death_f = 0;
 	data->done_threads = 0;
-	data->write_lock = NULL;
-	data->death_lock = NULL;
-	data->print_lock = NULL;
-	data->meal_lock = NULL;
 }
 
 static pthread_mutex_t	*create_forks(int num_philos)
@@ -39,11 +34,23 @@ static int	create_mutexes(t_data *data)
 	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
 		return (0);
 	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->write_lock);
 		return (0);
+	}
 	if (pthread_mutex_init(&(data->print_lock), NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->write_lock);
+		pthread_mutex_destroy(&data->death_lock);
 		return (0);
+	}
 	if (pthread_mutex_init(&(data->meal_lock), NULL) != 0)
+	{
+		pthread_mutex_destroy(&data->write_lock);
+		pthread_mutex_destroy(&data->death_lock);
+		pthread_mutex_destroy(&data->print_lock);
 		return (0);
+	}
 	return (1);
 }
 
