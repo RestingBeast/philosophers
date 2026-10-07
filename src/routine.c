@@ -48,10 +48,7 @@ static int	have_a_meal(t_philo *p)
 		right = 0;
 	if (get_flag(p->death_lock, p->death_f))
 		return (0);
-	if (p->num_philo % 2 == 0)
-		return (start_eating(&(p->forks[left]), &(p->forks[right]), p));
-	else
-		return (start_eating(&(p->forks[right]), &(p->forks[left]), p));
+	return (start_eating(&(p->forks[left]), &(p->forks[right]), p));
 }
 
 static void	sync_philos(t_philo *p)

@@ -12,20 +12,6 @@
 
 #include "philo.h"
 
-static int	init_data(t_data *data)
-{
-	data->rules = NULL;
-	data->forks = NULL;
-	data->philos = NULL;
-	data->threads = NULL;
-	data->start_f = 0;
-	data->death_f = 0;
-	data->done_threads = 0;
-	if (!create_mutexes(data))
-		return (0);
-	return (1);
-}
-
 static pthread_mutex_t	*create_forks(int num_philos)
 {
 	pthread_mutex_t	*res;
@@ -66,6 +52,20 @@ static int	create_mutexes(t_data *data)
 		pthread_mutex_destroy(&data->print_lock);
 		return (0);
 	}
+	return (1);
+}
+
+static int	init_data(t_data *data)
+{
+	data->rules = NULL;
+	data->forks = NULL;
+	data->philos = NULL;
+	data->threads = NULL;
+	data->start_f = 0;
+	data->death_f = 0;
+	data->done_threads = 0;
+	if (!create_mutexes(data))
+		return (0);
 	return (1);
 }
 
