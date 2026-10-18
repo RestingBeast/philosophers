@@ -2,6 +2,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 INCLUDE = -Iinclude
 HEADER = include/philo.h
+BONUS_HEADER = include/bonus.h
 NAME = philo
 SRC = 	src/philo.c \
 	src/data.c \
@@ -30,7 +31,10 @@ $(NAME): $(OBJ)
 $(BONUS): $(BONUS_OBJ)
 	$(CC) $(CFLAGS) -o $(BONUS) $(BONUS_OBJ) -lpthread
 
-%.o: %.c $(HEADER)
+src/%.o: src/%.c $(HEADER) 
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
+
+bonus/%.o: bonus/%.c $(BONUS_HEADER)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
 clean:
