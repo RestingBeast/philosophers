@@ -22,10 +22,12 @@ BONUS_OBJ = $(BONUS_SRC:.c=.o)
 
 all: $(NAME)
 
+bonus: $(BONUS) 
+
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -lpthread
 
-bonus: $(BONUS_OBJ)
+$(BONUS): $(BONUS_OBJ)
 	$(CC) $(CFLAGS) -o $(BONUS) $(BONUS_OBJ) -lpthread
 
 %.o: %.c $(HEADER)
@@ -41,4 +43,4 @@ fclean: clean
 
 re:	fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

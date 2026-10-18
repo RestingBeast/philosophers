@@ -12,6 +12,19 @@
 
 #include "philo.h"
 
+void	join_threads(int i, t_data *data, int err)
+{
+	if (err)
+	{
+		pthread_mutex_lock(&data->write_lock);
+		data->start_f = -1;
+		pthread_mutex_unlock(&data->write_lock);
+		printf("Thread Creation Failed\n");
+	}
+	while (i-- > 0)
+		pthread_join(data->threads[i], NULL);
+}
+
 int	main(int argc, char **argv)
 {
 	int		i;
@@ -21,20 +34,21 @@ int	main(int argc, char **argv)
 		return (fatal_error("Expected 4 or 5 arguments"));
 	if (create_data(argc, argv, &data) != 0)
 		return (EXIT_FAILURE);
+	if (data.rules->num_philos == 1)
+		return (handle_one_philo(data.rules->time_to_die), clean_up(&data), 0);
 	i = 0;
 	while (i < data.rules->num_philos)
 	{
 		if (pthread_create(&(data.threads[i]), NULL, philo_routine,
 				(void *) data.philos[i]) != 0)
-			return (1);
+			return (join_threads(i, &data, 1), clean_up(&data), 1);
 		i++;
 	}
 	if (pthread_create(&(data.observer), NULL,
 			observer_routine, (void *) &data) != 0)
-		return (1);
+		return (join_threads(i, &data, 1), clean_up(&data), 1);
 	pthread_join(data.observer, NULL);
-	while (i-- > 0)
-		pthread_join(data.threads[i], NULL);
+	join_threads(i, &data, 0);
 	clean_up(&data);
 	return (0);
 }

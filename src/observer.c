@@ -32,13 +32,13 @@ static	void	report_death(t_philo *p)
 {
 	long long	timestamp;
 
-	pthread_mutex_lock(p->death_lock);
 	pthread_mutex_lock(p->print_lock);
+	pthread_mutex_lock(p->death_lock);
 	*(p->death_f) = 1;
 	timestamp = get_time_ms() - p->rules->start_time;
 	printf("%lld %d died\n", timestamp, p->num_philo + 1);
-	pthread_mutex_unlock(p->print_lock);
 	pthread_mutex_unlock(p->death_lock);
+	pthread_mutex_unlock(p->print_lock);
 }
 
 static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
@@ -80,7 +80,7 @@ void	*observer_routine(void *args)
 		check_philosophers(data->philos, data->rules->num_philos, &obs);
 		if (obs.done_threads == data->rules->num_philos)
 			break ;
-		usleep(10 * 1000);
+		usleep(1000);
 	}
 	return (NULL);
 }

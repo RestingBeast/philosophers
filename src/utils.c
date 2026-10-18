@@ -22,6 +22,8 @@ long long	get_time_ms(void)
 
 int	is_integer(char *str)
 {
+	if (*str == '\0')
+		return (0);
 	while (*str != '\0')
 	{
 		if (*str < '0' || *str > '9')
@@ -48,4 +50,12 @@ int	fatal_error(char *msg)
 {
 	printf("%s\n", msg);
 	return (1);
+}
+
+void	handle_one_philo(int time_to_die)
+{
+	printf("0 1 is thinking\n");
+	printf("0 1 has taken a fork\n");
+	usleep(time_to_die * 1000);
+	printf("%d 1 died\n", time_to_die);
 }

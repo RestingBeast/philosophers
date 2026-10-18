@@ -94,9 +94,16 @@ void	clean_up(t_data *data)
 	if (data->rules)
 		num_philo = data->rules->num_philos;
 	free(data->rules);
-	destroy_fork(num_philo, data->forks);
-	free(data->forks);
-	free(data->threads);
-	free_philo(num_philo, data->philos);
-	free(data->philos);
+	if (data->forks)
+	{
+		destroy_fork(num_philo, data->forks);
+		free(data->forks);
+	}
+	if (data->threads)
+		free(data->threads);
+	if (data->philos)
+	{
+		free_philo(num_philo, data->philos);
+		free(data->philos);
+	}
 }

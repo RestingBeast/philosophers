@@ -24,7 +24,7 @@ static pthread_mutex_t	*create_forks(int num_philos)
 	while (i < num_philos)
 	{
 		if (pthread_mutex_init(&res[i], NULL) != 0)
-			return (NULL);
+			return (free(res), NULL);
 		i++;
 	}
 	return (res);
@@ -69,7 +69,7 @@ static int	init_data(t_data *data)
 	return (1);
 }
 
-int	create_data(int argc, char **argv, t_data *data)
+static int	check_argv(int argc, char **argv)
 {
 	int	i;
 
@@ -77,15 +77,22 @@ int	create_data(int argc, char **argv, t_data *data)
 	while (++i < argc)
 	{
 		if (!is_integer(argv[i]))
-			return (fatal_error("Expected integers as arguements"));
+			return (0);
 	}
+	return (1);
+}
+
+int	create_data(int argc, char **argv, t_data *data)
+{
+	if (!check_argv(argc, argv))
+		return (fatal_error("Expected integers as arguements"));
 	if (!init_data(data))
 		return (fatal_error("Mutex Initialization Failed"));
 	data->rules = create_rules(argc, argv);
 	if (!data->rules)
-		return (fatal_error("Malloc Failed"));
-	if (data->rules->num_philos < 2)
-		return (clean_up(data), fatal_error("Not enough fork!"));
+		return (clean_up(data), fatal_error("Malloc Failed"));
+	if (check_rules(data->rules) == 1)
+		return (clean_up(data), fatal_error("Zero is not a valid input"));
 	data->threads = malloc(data->rules->num_philos * sizeof(pthread_t));
 	if (!data->threads)
 		return (clean_up(data), fatal_error("Malloc Failed"));

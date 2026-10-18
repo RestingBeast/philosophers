@@ -48,17 +48,28 @@ static int	have_a_meal(t_philo *p)
 		right = 0;
 	if (get_flag(p->death_lock, p->death_f))
 		return (0);
-	return (start_eating(&(p->forks[left]), &(p->forks[right]), p));
+	if (p->num_philo % 2 == 0)
+		return (start_eating(&(p->forks[left]), &(p->forks[right]), p));
+	else
+		return (start_eating(&(p->forks[right]), &(p->forks[left]), p));
 }
 
-static void	sync_philos(t_philo *p)
+static int	sync_philos(t_philo *p)
 {
+	int	flag;
+
 	while (1)
 	{
-		if (get_flag(p->write_lock, p->start_f) == 1)
+		flag = get_flag(p->write_lock, p->start_f);
+		if (flag == -1)
+			return (0);
+		if (flag == 1)
 			break ;
 		usleep(10 * 1000);
 	}
+	if (p->num_philo % 2 == 1)
+		usleep(p->rules->time_to_eat * 1000);
+	return (1);
 }
 
 static int	is_done(t_philo *p)
@@ -76,9 +87,8 @@ void	*philo_routine(void *args)
 	t_philo		*p;
 
 	p = (t_philo *)args;
-	sync_philos(p);
-	if (p->num_philo % 2 == 1)
-		usleep(p->rules->time_to_eat * 1000);
+	if (!sync_philos(p))
+		return (NULL);
 	update_death_timer(p);
 	while (1)
 	{

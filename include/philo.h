@@ -93,8 +93,10 @@ long long		get_time_ms(void);
 int				is_integer(char *str);
 int				simple_atoi(char *str);
 int				fatal_error(char *msg);
+void			handle_one_philo(int time_to_die);
 
 // rules.c
 t_rules			*create_rules(int argc, char **argv);
+int				check_rules(t_rules *rules);
 
 #endif
