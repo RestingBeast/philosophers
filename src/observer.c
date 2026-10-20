@@ -80,7 +80,7 @@ void	*observer_routine(void *args)
 		check_philosophers(data->philos, data->rules->num_philos, &obs);
 		if (obs.done_threads == data->rules->num_philos)
 			break ;
-		usleep(1000);
+		precise_sleep(1, NULL);
 	}
 	return (NULL);
 }

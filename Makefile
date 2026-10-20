@@ -11,7 +11,8 @@ SRC = 	src/philo.c \
 	src/routine_utils.c \
 	src/rules.c \
 	src/observer.c \
-	src/utils.c
+	src/utils.c \
+	src/time.c
 OBJ = $(SRC:.c=.o)
 
 BONUS = philo_bonus

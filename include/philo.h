@@ -89,11 +89,14 @@ void			update_death_timer(t_philo *p);
 void			*observer_routine(void *args);
 
 // utils.c
-long long		get_time_ms(void);
 int				is_integer(char *str);
 int				simple_atoi(char *str);
 int				fatal_error(char *msg);
 void			handle_one_philo(int time_to_die);
+
+// time.c
+long long		get_time_ms(void);
+void			precise_sleep(int time_ms, t_philo *p);
 
 // rules.c
 t_rules			*create_rules(int argc, char **argv);
