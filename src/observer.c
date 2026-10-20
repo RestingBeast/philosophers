@@ -18,16 +18,6 @@ static void	init_observer(t_observer *obs)
 	obs->done_threads = 0;
 }
 
-static long long	get_death_timer(pthread_mutex_t *lock, long long *time)
-{
-	long long	res;
-
-	pthread_mutex_lock(lock);
-	res = *time;
-	pthread_mutex_unlock(lock);
-	return (res);
-}
-
 static	void	report_death(t_philo *p)
 {
 	long long	timestamp;

@@ -104,6 +104,8 @@ void	*philo_routine(void *args)
 			break ;
 		print_status(p, "is sleeping");
 		precise_sleep(p->rules->time_to_sleep, p);
+		if (p->rules->num_philos % 2 != 0)
+			stagger_philos(p);
 	}
 	return (NULL);
 }

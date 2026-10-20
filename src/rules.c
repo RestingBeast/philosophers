@@ -32,7 +32,7 @@ t_rules	*create_rules(int argc, char **argv)
 
 int	check_rules(t_rules *rules)
 {
-	return (rules->num_philos == 0 || rules->time_to_die == 0 ||
-		rules->time_to_eat == 0 || rules->time_to_sleep == 0 ||
-		rules->meals_to_eat == 0);
+	return (rules->num_philos == 0 || rules->time_to_die == 0
+		|| rules->time_to_eat == 0 || rules->time_to_sleep == 0
+		|| rules->meals_to_eat == 0);
 }

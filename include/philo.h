@@ -73,7 +73,7 @@ struct s_observer
 
 // data.c
 int				create_data(int argc, char **argv, t_data *data);
-t_philo  		**create_philos(t_data *data, int *start_f, int *death_f);
+t_philo			**create_philos(t_data *data, int *start_f, int *death_f);
 void			clean_up(t_data *data);
 
 // routine.c
@@ -97,6 +97,8 @@ void			handle_one_philo(int time_to_die);
 // time.c
 long long		get_time_ms(void);
 void			precise_sleep(int time_ms, t_philo *p);
+void			stagger_philos(t_philo *p);
+long long		get_death_timer(pthread_mutex_t *lock, long long *time);
 
 // rules.c
 t_rules			*create_rules(int argc, char **argv);
