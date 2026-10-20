@@ -66,6 +66,15 @@ static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 	}
 }
 
+void	set_philos_death_timer(int num_philos, t_philo **p)
+{
+	int	i;
+
+	i = -1;
+	while (++i < num_philos)
+		p[i]->death_timer = p[i]->rules->start_time + p[i]->rules->time_to_die;
+}
+
 void	*observer_routine(void *args)
 {
 	t_data		*data;
@@ -73,8 +82,11 @@ void	*observer_routine(void *args)
 
 	data = (t_data *) args;
 	init_observer(&obs);
-	toggle_flag(&data->write_lock, &data->start_f);
+	pthread_mutex_lock(&data->write_lock);
 	data->rules->start_time = get_time_ms() + 10;
+	set_philos_death_timer(data->rules->num_philos, data->philos);
+	data->start_f = 1;
+	pthread_mutex_unlock(&data->write_lock);
 	while (!obs.stop)
 	{
 		check_philosophers(data->philos, data->rules->num_philos, &obs);
