@@ -40,8 +40,6 @@ static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 	obs->done_threads = 0;
 	while (++i < num_philos)
 	{
-		if (get_death_timer(p[i]->meal_lock, &p[i]->death_timer) == 0)
-			continue ;
 		done = get_flag(p[i]->write_lock, &p[i]->done_f);
 		obs->done_threads += done;
 		if (done)
@@ -56,7 +54,7 @@ static void	check_philosophers(t_philo **p, int num_philos, t_observer *obs)
 	}
 }
 
-void	set_philos_death_timer(int num_philos, t_philo **p)
+static void	set_philos_death_timer(int num_philos, t_philo **p)
 {
 	int	i;
 
