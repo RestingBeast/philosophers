@@ -34,8 +34,6 @@ int	main(int argc, char **argv)
 		return (fatal_error("Expected 4 or 5 arguments"));
 	if (create_data(argc, argv, &data) != 0)
 		return (EXIT_FAILURE);
-	if (data.rules->num_philos == 1)
-		return (handle_one_philo(data.rules->time_to_die), clean_up(&data), 0);
 	i = 0;
 	while (i < data.rules->num_philos)
 	{

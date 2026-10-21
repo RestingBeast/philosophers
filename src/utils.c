@@ -43,11 +43,3 @@ int	fatal_error(char *msg)
 	printf("%s\n", msg);
 	return (1);
 }
-
-void	handle_one_philo(int time_to_die)
-{
-	printf("0 1 is thinking\n");
-	printf("0 1 has taken a fork\n");
-	usleep(time_to_die * 1000);
-	printf("%d 1 died\n", time_to_die);
-}

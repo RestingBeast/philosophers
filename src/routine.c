@@ -16,7 +16,7 @@ static int	start_eating(pthread_mutex_t *f, pthread_mutex_t *s, t_philo *p)
 {
 	pthread_mutex_lock(f);
 	print_status(p, "has taken a fork");
-	if (get_flag(p->death_lock, p->death_f))
+	if (p->rules->num_philos == 1 || get_flag(p->death_lock, p->death_f))
 	{
 		pthread_mutex_unlock(f);
 		return (0);
