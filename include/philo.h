@@ -75,6 +75,7 @@ struct s_observer
 int				create_data(int argc, char **argv, t_data *data);
 t_philo			**create_philos(t_data *data, int *start_f, int *death_f);
 void			clean_up(t_data *data);
+void			destroy_forks(int num_philos, pthread_mutex_t *forks);
 
 // routine.c
 void			*philo_routine(void *args);

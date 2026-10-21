@@ -19,12 +19,13 @@ static pthread_mutex_t	*create_forks(int num_philos)
 
 	res = malloc(num_philos * sizeof(pthread_mutex_t));
 	if (!res)
-		return (NULL);
+		return (printf("Malloc Failed\n"), NULL);
 	i = 0;
 	while (i < num_philos)
 	{
 		if (pthread_mutex_init(&res[i], NULL) != 0)
-			return (free(res), NULL);
+			return (destroy_forks(i, res), free(res),
+				printf("Mutex Initilization Failed\n"), NULL);
 		i++;
 	}
 	return (res);
@@ -98,7 +99,7 @@ int	create_data(int argc, char **argv, t_data *data)
 		return (clean_up(data), fatal_error("Malloc Failed"));
 	data->forks = create_forks(data->rules->num_philos);
 	if (!data->forks)
-		return (clean_up(data), fatal_error("Malloc Failed"));
+		return (clean_up(data), 1);
 	data->philos = create_philos(data, &(data->start_f), &(data->death_f));
 	if (!data->philos)
 		return (clean_up(data), fatal_error("Malloc Failed"));

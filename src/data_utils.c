@@ -58,7 +58,7 @@ t_philo	**create_philos(t_data *data, int *start_f, int *death_f)
 	return (res);
 }
 
-static void	destroy_fork(int num_philos, pthread_mutex_t *forks)
+void	destroy_forks(int num_philos, pthread_mutex_t *forks)
 {
 	int	i;
 
@@ -96,7 +96,7 @@ void	clean_up(t_data *data)
 	free(data->rules);
 	if (data->forks)
 	{
-		destroy_fork(num_philo, data->forks);
+		destroy_forks(num_philo, data->forks);
 		free(data->forks);
 	}
 	if (data->threads)
