@@ -62,6 +62,35 @@ Each state change is printed as `timestamp_in_ms philosopher_number action`:
 ./philo 4 310 200 100      # a philosopher dies at about 310
 ```
 
+## Checking for data races and leaks
+
+Helgrind and DRD (both part of Valgrind) report data races, lock-order problems and misuse of the pthread API. Run them with a meal limit so the simulation ends on its own. Both tools slow the program down a lot, so use a small number of philosophers and generous times; a death reported under them doesn't mean the timing is wrong.
+
+```sh
+valgrind --tool=helgrind ./philo 4 800 200 200 3
+valgrind --tool=drd ./philo 4 800 200 200 3
+```
+
+A clean run ends with `ERROR SUMMARY: 0 errors from 0 contexts`.
+
+To check for memory leaks, including when the simulation ends with a death:
+
+```sh
+valgrind --leak-check=full --show-leak-kinds=all ./philo 5 800 200 200 3
+valgrind --leak-check=full --show-leak-kinds=all ./philo 4 310 200 100
+```
+
+A clean run shows `in use at exit: 0 bytes in 0 blocks`.
+
+ThreadSanitizer is a faster race detector built into the compiler. It needs a separate build:
+
+```sh
+cc -Wall -Wextra -Werror -g -fsanitize=thread -Iinclude src/*.c -o philo_tsan -lpthread
+./philo_tsan 5 800 200 200 5
+```
+
+No `WARNING: ThreadSanitizer: data race` in the output means no race was found. Don't run a ThreadSanitizer build under Valgrind.
+
 # Resources
 
 - [Mutex vs Semaphore](https://www.geeksforgeeks.org/operating-systems/mutex-vs-semaphore/)
